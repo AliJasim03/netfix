@@ -18,6 +18,7 @@ a:hover {
 button:not(:last-child) {
   margin-right: 40px;
 }
+
 button {
   border: 2px solid transparent;
   border-radius: 5px;
@@ -29,6 +30,7 @@ button {
   cursor: pointer;
   margin-top: 30px;
 }
+
 button:hover {
   background: #ec4138;
   border: 2px solid #f05749;
@@ -80,6 +82,7 @@ button:hover {
   text-decoration: 2px underline;
   text-decoration-color: rgba(255, 68, 0, 0.37);
 }
+
 /* ======================================== Home Page ============================================== */
 
 .home_logo {
@@ -108,6 +111,13 @@ button:hover {
   width: 95%;
   margin: 0 auto;
   margin-bottom: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.navbar-right {
+  flex-direction: row-reverse;
+  margin-left: auto;
 }
 
 .navbar ul {
@@ -118,21 +128,25 @@ button:hover {
   padding: 0 30px;
   list-style-type: none;
 }
+
 .navbar ul li:not(:last-child) {
   margin-right: 40px;
 }
+
 .navbar ul li {
   border: 2px solid transparent;
   border-radius: 5px;
   padding: 10px;
   transition: background 0.2s;
 }
+
 .navbar ul li a {
   color: #ec2f00;
   text-decoration: none;
   text-transform: uppercase;
   transition: color 0.2s;
 }
+
 .navbar ul li ul {
   visibility: hidden;
   opacity: 0;
@@ -147,6 +161,7 @@ button:hover {
   border-radius: 5px;
   transition: opacity 0.2s, visibility 0.2s;
 }
+
 .navbar ul li ul li {
   margin: -2px 0 0 -2px;
   width: calc(100% - 20px);
@@ -159,14 +174,17 @@ button:hover {
   border-right: 2px solid #e02a21;
   border-bottom: 2px solid #e02a21;
 }
+
 .navbar ul li:hover a {
   color: #f9f8fd;
 }
+
 .navbar ul li:hover ul {
   visibility: visible;
   opacity: 1;
   box-shadow: 0px 3px 5px 2px #ebecf1;
 }
+
 .navbar ul li:hover ul li a {
   color: #f9f8fd;
 }
@@ -184,6 +202,7 @@ button:hover {
 .service_info_header {
   display: block ruby;
 }
+
 .service_info_header h5 {
   float: right;
 }
@@ -204,10 +223,12 @@ pre {
 .service_list_info {
   padding: 0 30px;
 }
+
 .service_list_info li {
   list-style-type: none;
 }
-.service_list_info li a:hover > pre {
+
+.service_list_info li a:hover>pre {
   display: block;
 }
 
@@ -237,6 +258,7 @@ pre {
   box-shadow: 2px 3px 6px 1px #21212173;
   transition: 0.5s;
 }
+
 .create_service:not(hover) {
   transition: 0.6s;
 }
@@ -269,9 +291,11 @@ pre {
   box-shadow: 0px 0px 5px 5px rgb(50, 50, 50);
   cursor: pointer;
 }
+
 .img:hover {
   box-shadow: 0px 0px 9px 5px rgb(27, 27, 27);
 }
+
 .img:active {
   background-color: #474747;
   transition: 0.1s;
