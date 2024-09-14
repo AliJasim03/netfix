@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, authenticate
+from django.contrib.auth.forms import AuthenticationForm
 from django.views.generic import CreateView, TemplateView
 
 from .forms import CustomerSignUpForm, CompanySignUpForm, UserLoginForm
@@ -41,4 +42,18 @@ class CompanySignUpView(CreateView):
 
 
 def LoginUserView(request):
-    pass
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('/')
+            else:
+                form.add_error(None, "Invalid username or password")
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'users/login.html', {'form': form})

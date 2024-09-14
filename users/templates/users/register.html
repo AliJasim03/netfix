@@ -9,7 +9,7 @@ User Type
 <div style="margin-top: 70px;">
     <div style="margin-left: 50px" class="choice">
         <div class="company img" id="company">
-            <a href="/register/company">
+            <a href="{% url 'register_company' %}">
                 <img src="/static/css/company.png" alt="company" width="300em">
             </a>
         </div>
@@ -18,7 +18,7 @@ User Type
 
     <div style="float: right; margin-right: 50px;" class="choice">
         <div class="img" id="customer">
-            <a href="/register/customer">
+            <a href="{% url 'register_customer' %}">
                 <img src="/static/css/customer.png" alt="customer">
             </a>
         </div>
