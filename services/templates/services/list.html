@@ -2,17 +2,64 @@
 {% block title %}
     Services List
 {% endblock %}
+
 {% block content %}
-    <p class="title">Services</p>
-    {% if user.is_company %}
-        <a class="create_service" href="/services/create"> Create Service</a>
-    {% endif %}
-    <div class='services_list'>
-        {% if services %}
-            {% for service in services.all %}
-            {% endfor %}
-        {% else %}
-            <h2>Sorry No services available yet</h2>
+    <div class="services-container">
+        <h1 class="title">Available Services</h1>
+
+        {% if user.is_company %}
+            <a class="create-service-btn" href="{% url 'services_create' %}">
+                <i class="fa fa-plus"></i> Create New Service
+            </a>
         {% endif %}
-     </div>
+
+        <div class="services-filter">
+            <form method="GET" class="filter-form">
+                <div class="filter-group">
+                    <label for="field">Filter by Category:</label>
+                    <select name="field" id="field" onchange="this.form.submit()">
+                        <option value="">All Categories</option>
+                        <option value="Air Conditioner" {% if request.GET.field == 'Air Conditioner' %}selected{% endif %}>Air Conditioner</option>
+                        <option value="Carpentry" {% if request.GET.field == 'Carpentry' %}selected{% endif %}>Carpentry</option>
+                        <option value="Electricity" {% if request.GET.field == 'Electricity' %}selected{% endif %}>Electricity</option>
+                        <option value="Gardening" {% if request.GET.field == 'Gardening' %}selected{% endif %}>Gardening</option>
+                        <option value="Home Machines" {% if request.GET.field == 'Home Machines' %}selected{% endif %}>Home Machines</option>
+                        <option value="House Keeping" {% if request.GET.field == 'House Keeping' %}selected{% endif %}>House Keeping</option>
+                        <option value="Interior Design" {% if request.GET.field == 'Interior Design' %}selected{% endif %}>Interior Design</option>
+                        <option value="Locks" {% if request.GET.field == 'Locks' %}selected{% endif %}>Locks</option>
+                        <option value="Painting" {% if request.GET.field == 'Painting' %}selected{% endif %}>Painting</option>
+                        <option value="Plumbing" {% if request.GET.field == 'Plumbing' %}selected{% endif %}>Plumbing</option>
+                        <option value="Water Heaters" {% if request.GET.field == 'Water Heaters' %}selected{% endif %}>Water Heaters</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+
+        <div class="services-grid">
+            {% if services %}
+                {% for service in services %}
+                    <div class="service-card">
+                        <div class="service-card-header">
+                            <h3 class="service-title">{{ service.name }}</h3>
+                            <span class="service-badge">{{ service.field }}</span>
+                        </div>
+                        <div class="service-card-body">
+                            <p class="service-description">
+                                {{ service.description|truncatechars:150 }}
+                            </p>
+                        </div>
+                        <div class="service-card-footer">
+                            <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
+                            <div class="service-provider">By <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
+                            <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-services">
+                    <p>No services available yet. {% if user.is_company %}Why not <a href="{% url 'services_create' %}">create one</a>?{% endif %}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

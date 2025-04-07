@@ -1,15 +1,172 @@
 {% extends 'main/base.html' %}
 {% block title %}
-    {{ service.name }}
+    {{ service.name }} - Service Details
 {% endblock %}
+
 {% block content %}
-    <div class='service_info_header'>
-        <h1>{{service.name}} -- {{service.price_hour}}€/hour</h1>
-        <h5>by <a href="/company/{{service.company.user}}">{{service.company.user}}</a></h5>
+<div class="service-detail-container">
+    <div class="service-header">
+        <div>
+            <h1 class="service-detail-title">{{ service.name }}</h1>
+            <span class="service-detail-badge">{{ service.field }}</span>
+        </div>
     </div>
-    <h3>{{service.field}}</h3>
-    <p style="text-align: left;">{{service.description}}</p>
-    {% if request.user.is_customer %}
-        <a href="/services/{{service.id}}/request_service/" class="like_button">Request Service</a>
+
+    <div class="service-detail-meta">
+        <div class="service-detail-price">{{ service.price_hour }}€ <span class="price-unit">/hour</span></div>
+        <div class="service-detail-provider">Provided by: <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
+        <div class="service-detail-date">Created on: {{ service.date|date:"F j, Y" }}</div>
+    </div>
+
+    <div class="service-detail-description">
+        <h2>Service Description</h2>
+        <p>{{ service.description }}</p>
+    </div>
+
+    {% if user.is_customer %}
+        <a href="{% url 'request_service' service.id %}" class="request-service-btn">Request This Service</a>
+    {% elif not user.is_authenticated %}
+        <p class="login-prompt">Please <a href="{% url 'login_user' %}">login</a> as a customer to request this service.</p>
     {% endif %}
+
+    {% if user.is_company and user == service.company.user %}
+        <div class="service-management">
+            <h3>Service Management</h3>
+            <div class="management-buttons">
+                <a href="#" class="edit-service-btn">Edit Service</a>
+                <a href="#" class="delete-service-btn">Delete Service</a>
+            </div>
+        </div>
+    {% endif %}
+
+    <div class="company-info">
+        <h3>About the Provider</h3>
+        <div class="company-card">
+            <div class="company-avatar">{{ service.company.user.username|first|upper }}</div>
+            <div class="company-details">
+                <h4>{{ service.company.user.username }}</h4>
+                <p class="company-field">{{ service.company.field }} Specialist</p>
+                <p class="company-rating">Rating:
+                    {% for i in "12345" %}
+                        {% if forloop.counter <= service.company.rating %}
+                            <span class="star filled">★</span>
+                        {% else %}
+                            <span class="star">☆</span>
+                        {% endif %}
+                    {% endfor %}
+                    <span class="rating-value">{{ service.company.rating }}/5</span>
+                </p>
+                <a href="{% url 'company_profile' service.company.user.username %}" class="view-profile-btn">View Profile</a>
+            </div>
+        </div>
+    </div>
+
+    {% if related_services %}
+        <div class="related-services">
+            <h3>Related Services</h3>
+            <div class="services-grid">
+                {% for related in related_services %}
+                    <div class="service-card">
+                        <div class="service-card-header">
+                            <h3 class="service-title">{{ related.name }}</h3>
+                            <span class="service-badge">{{ related.field }}</span>
+                        </div>
+                        <div class="service-card-footer">
+                            <div class="service-price">{{ related.price_hour }}€<span class="price-unit">/hour</span></div>
+                            <div class="service-provider">By <a href="{% url 'company_profile' related.company.user.username %}">{{ related.company.user.username }}</a></div>
+                            <a href="{% url 'index' related.id %}" class="view-details-btn">View Details</a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .star {
+        color: #ccc;
+        font-size: 1.25rem;
+    }
+    .star.filled {
+        color: #f59e0b;
+    }
+    .rating-value {
+        margin-left: 0.5rem;
+        font-size: 0.875rem;
+        color: var(--text-light);
+    }
+    .company-card {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        padding: 1.5rem;
+        background-color: #f9fafb;
+        border-radius: var(--radius-lg);
+        margin-top: 1rem;
+    }
+    .company-avatar {
+        width: 80px;
+        height: 80px;
+        background-color: var(--secondary-color);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+    .company-details {
+        flex: 1;
+    }
+    .company-field {
+        color: var(--text-light);
+        margin-bottom: 0.5rem;
+    }
+    .view-profile-btn {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: var(--secondary-color);
+        color: white;
+        border-radius: var(--radius-md);
+        margin-top: 1rem;
+        font-size: 0.875rem;
+    }
+    .view-profile-btn:hover {
+        background-color: var(--secondary-light);
+        color: white;
+    }
+    .service-management {
+        margin: 2rem 0;
+        padding: 1.5rem;
+        background-color: #f9fafb;
+        border-radius: var(--radius-lg);
+        border: 1px dashed var(--border-color);
+    }
+    .management-buttons {
+        display: flex;
+        gap: 1rem;
+        margin-top: 1rem;
+    }
+    .edit-service-btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--secondary-color);
+        color: white;
+        border-radius: var(--radius-md);
+    }
+    .delete-service-btn {
+        padding: 0.5rem 1rem;
+        background-color: var(--error-color);
+        color: white;
+        border-radius: var(--radius-md);
+    }
+    .login-prompt {
+        margin: 2rem 0;
+        padding: 1rem;
+        background-color: #f9fafb;
+        border-radius: var(--radius-md);
+        text-align: center;
+    }
+</style>
 {% endblock %}

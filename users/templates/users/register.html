@@ -1,28 +1,151 @@
 {% extends 'main/base.html' %}
 {% block title %}
-User Type
-{%endblock %}
+    Register - Choose Account Type
+{% endblock %}
 
-{%block content %}
-<p class="choice_text">Choose wether you want to be a customer or a company</p>
-
-<div style="margin-top: 70px;">
-    <div style="margin-left: 50px" class="choice">
-        <div class="company img" id="company">
-            <a href="{% url 'register_company' %}">
-                <img src="/static/css/company.png" alt="company" width="300em">
-            </a>
+{% block content %}
+<div class="register-container">
+    <h1 class="title">Join NetFix</h1>
+    
+    <p class="register-subtitle">Choose your account type to get started</p>
+    
+    <div class="account-types">
+        <div class="account-type-card company">
+            <div class="account-icon">🏢</div>
+            <h2>Company</h2>
+            <p>Create and offer services to customers</p>
+            <ul class="account-features">
+                <li>Create multiple service listings</li>
+                <li>Showcase your expertise</li>
+                <li>Get discovered by customers</li>
+                <li>Build your online reputation</li>
+            </ul>
+            <a href="{% url 'register_company' %}" class="account-select-btn">Register as Company</a>
         </div>
-        <p class="label_images">Company</p>
+        
+        <div class="account-type-card customer">
+            <div class="account-icon">👤</div>
+            <h2>Customer</h2>
+            <p>Find and request services you need</p>
+            <ul class="account-features">
+                <li>Browse services across categories</li>
+                <li>Request services with just a few clicks</li>
+                <li>Track your service history</li>
+                <li>Find the best service providers</li>
+            </ul>
+            <a href="{% url 'register_customer' %}" class="account-select-btn">Register as Customer</a>
+        </div>
     </div>
-
-    <div style="float: right; margin-right: 50px;" class="choice">
-        <div class="img" id="customer">
-            <a href="{% url 'register_customer' %}">
-                <img src="/static/css/customer.png" alt="customer">
-            </a>
-        </div>
-        <p>Customer</p>
+    
+    <div class="login-prompt">
+        <p>Already have an account? <a href="{% url 'login_user' %}">Log in</a></p>
     </div>
 </div>
+
+<style>
+    .register-container {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    .register-subtitle {
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--text-light);
+    }
+    
+    .account-types {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+        margin-bottom: 2rem;
+    }
+    
+    .account-type-card {
+        background-color: white;
+        border-radius: var(--radius-lg);
+        padding: 2rem;
+        box-shadow: var(--shadow-md);
+        text-align: center;
+        transition: var(--transition);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        border: 2px solid transparent;
+    }
+    
+    .account-type-card:hover {
+        transform: translateY(-5px);
+    }
+    
+    .account-type-card.company:hover {
+        border-color: var(--secondary-color);
+    }
+    
+    .account-type-card.customer:hover {
+        border-color: var(--primary-color);
+    }
+    
+    .account-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .account-type-card h2 {
+        margin-bottom: 1rem;
+    }
+    
+    .account-features {
+        list-style: none;
+        text-align: left;
+        margin: 1.5rem 0;
+        padding: 0;
+        flex-grow: 1;
+    }
+    
+    .account-features li {
+        padding: 0.5rem 0;
+        position: relative;
+        padding-left: 1.5rem;
+    }
+    
+    .account-features li:before {
+        content: "✓";
+        position: absolute;
+        left: 0;
+        color: var(--success-color);
+        font-weight: bold;
+    }
+    
+    .account-select-btn {
+        display: inline-block;
+        padding: 0.75rem 1.5rem;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        transition: var(--transition);
+    }
+    
+    .account-type-card.company .account-select-btn {
+        background-color: var(--secondary-color);
+        color: white;
+    }
+    
+    .account-type-card.company .account-select-btn:hover {
+        background-color: var(--secondary-light);
+    }
+    
+    .account-type-card.customer .account-select-btn {
+        background-color: var(--primary-color);
+        color: white;
+    }
+    
+    .account-type-card.customer .account-select-btn:hover {
+        background-color: var(--primary-dark);
+    }
+    
+    .login-prompt {
+        text-align: center;
+        margin-top: 2rem;
+    }
+</style>
 {% endblock %}

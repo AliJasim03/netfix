@@ -1,26 +1,97 @@
 {% extends 'main/base.html' %}
 {% block title %}
-    {{field}} Services List
+    {{field}} Services
 {% endblock %}
+
 {% block content %}
+<div class="services-container">
+    <h1 class="title">{{field}} Services</h1>
+
+    <div class="field-description">
+        <div class="field-icon">
+            {% if field == 'Air Conditioner' %}🌡️
+            {% elif field == 'Carpentry' %}🪑
+            {% elif field == 'Electricity' %}⚡
+            {% elif field == 'Gardening' %}🌱
+            {% elif field == 'Home Machines' %}🧰
+            {% elif field == 'House Keeping' %}🧹
+            {% elif field == 'Interior Design' %}🎨
+            {% elif field == 'Locks' %}🔒
+            {% elif field == 'Painting' %}🖌️
+            {% elif field == 'Plumbing' %}🚿
+            {% elif field == 'Water Heaters' %}🔥
+            {% endif %}
+        </div>
+        <p>Browse all available {{field}} services. Find the right professional for your needs.</p>
+    </div>
 
     {% if services.all|length != 0 %}
-        <p class="title">{{field}} Services</p>
-        <ul class='services_list'>
+        <div class="services-grid">
             {% for service in services.all %}
-                <div style="display: ruby;">
-                    <div class='service_list_info'>
-                        <li><a href="/services/{{service.id}}">{{ service.name }}</a>-- {{ service.price_hour }}€/hour</li>
-                        <pre>{{ service.description }}</pre>
+                <div class="service-card">
+                    <div class="service-card-header">
+                        <h3 class="service-title">{{ service.name }}</h3>
+                        <span class="service-badge">{{ service.field }}</span>
                     </div>
-                    <p style="display:block; margin: 0; float: right;font-size: small; margin-right: 30px;">by <a href="/company/{{service.company.user}}">{{service.company.user}}</a></p>
+                    <div class="service-card-body">
+                        <p class="service-description">
+                            {{ service.description|truncatechars:150 }}
+                        </p>
+                    </div>
+                    <div class="service-card-footer">
+                        <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
+                        <div class="service-provider">By <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
+                        <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                    </div>
                 </div>
-                {% if forloop.counter != services.all|length %}
-                    <div class="line"></div>
-                {% endif %}
             {% endfor %}
-        </ul>
+        </div>
     {% else %}
-        <h2>Sorry. No {{field}} services available</h2>
+        <div class="no-services">
+            <p>Sorry, no {{field}} services are available at the moment.</p>
+            {% if user.is_company %}
+                {% if user.company.field == field or user.company.field == 'All in One' %}
+                    <p>Why not create one?</p>
+                    <a href="{% url 'services_create' %}" class="button">Create Service</a>
+                {% endif %}
+            {% endif %}
+        </div>
     {% endif %}
+</div>
+
+<style>
+    .field-description {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+        padding: 1.5rem;
+        background-color: #f9fafb;
+        border-radius: var(--radius-lg);
+    }
+
+    .field-icon {
+        font-size: 2.5rem;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--secondary-color);
+        color: white;
+        border-radius: 50%;
+    }
+
+    .no-services {
+        text-align: center;
+        padding: 3rem;
+        background-color: #f9fafb;
+        border-radius: var(--radius-lg);
+        margin-top: 2rem;
+    }
+
+    .no-services p {
+        margin-bottom: 1rem;
+    }
+</style>
 {% endblock %}

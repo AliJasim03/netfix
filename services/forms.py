@@ -24,4 +24,28 @@ class CreateNewService(forms.Form):
 
 
 class RequestServiceForm(forms.Form):
-    pass
+    address = forms.CharField(
+        max_length=255,
+        required=True,
+        widget=forms.TextInput(attrs={
+            'placeholder': 'Enter service address'
+        })
+    )
+
+    service_time = forms.DecimalField(
+        decimal_places=1,
+        max_digits=4,
+        min_value=0.5,
+        required=True,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Service time in hours',
+            'step': '0.5'
+        }),
+        help_text="Please enter the time in hours (minimum 0.5 hours)"
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(RequestServiceForm, self).__init__(*args, **kwargs)
+        # Adding a custom class to all form fields
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'

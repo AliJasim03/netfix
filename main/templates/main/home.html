@@ -1,11 +1,96 @@
 {% extends 'main/base.html' %} 
-    {% block title %}
-        NetFix
-    {% endblock %}
+{% block title %}
+    NetFix - Home Services Marketplace
+{% endblock %}
 
 {% block content %}
-    <div style="margin-top: 50px;">
-        <p class="site_title">NetFix</p>
-        <img class="home_logo" src="static/css/logo.png" alt="logo">
+<div class="home-container">
+    <img class="home-logo" src="static/css/logo.png" alt="NetFix Logo">
+    <h1 class="site-title">NetFix</h1>
+    <p class="site-subtitle">One platform for all your home service needs. Find trusted professionals for plumbing, electrical work, painting, and more.</p>
+
+    <div class="home-cta">
+        {% if user.is_authenticated %}
+            <a href="{% url 'services_list' %}" class="button cta-button">Browse Services</a>
+            {% if user.is_company %}
+                <a href="{% url 'services_create' %}" class="button cta-button secondary">Create Service</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login_user' %}" class="button cta-button">Log In</a>
+            <a href="{% url 'register' %}" class="button cta-button secondary">Sign Up</a>
+        {% endif %}
     </div>
+</div>
+
+{% if popular_services %}
+<div class="popular-services">
+    <h2 class="title">Most Requested Services</h2>
+    <div class="popular-services-grid">
+        {% for service in popular_services %}
+            <div class="popular-service-card">
+                <span class="popular-badge">Popular</span>
+                <div class="popular-service-content">
+                    <h3 class="popular-service-title">{{ service.name }}</h3>
+                    <p class="popular-service-provider">by <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></p>
+                    <div class="popular-service-meta">
+                        <span class="popular-service-price">{{ service.price_hour }}€/hour</span>
+                        <span class="popular-service-count">{{ service.request_count }} requests</span>
+                    </div>
+                </div>
+                <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div class="service-categories">
+    <h2 class="title">Browse by Category</h2>
+    <div class="services-grid">
+        <a href="{% url 'services_field' 'air-conditioner' %}" class="category-card">
+            <div class="category-icon">🌡️</div>
+            <h3>Air Conditioner</h3>
+        </a>
+        <a href="{% url 'services_field' 'carpentry' %}" class="category-card">
+            <div class="category-icon">🪑</div>
+            <h3>Carpentry</h3>
+        </a>
+        <a href="{% url 'services_field' 'electricity' %}" class="category-card">
+            <div class="category-icon">⚡</div>
+            <h3>Electricity</h3>
+        </a>
+        <a href="{% url 'services_field' 'gardening' %}" class="category-card">
+            <div class="category-icon">🌱</div>
+            <h3>Gardening</h3>
+        </a>
+        <a href="{% url 'services_field' 'home-machines' %}" class="category-card">
+            <div class="category-icon">🧰</div>
+            <h3>Home Machines</h3>
+        </a>
+        <a href="{% url 'services_field' 'house-keeping' %}" class="category-card">
+            <div class="category-icon">🧹</div>
+            <h3>House Keeping</h3>
+        </a>
+        <a href="{% url 'services_field' 'interior-design' %}" class="category-card">
+            <div class="category-icon">🎨</div>
+            <h3>Interior Design</h3>
+        </a>
+        <a href="{% url 'services_field' 'locks' %}" class="category-card">
+            <div class="category-icon">🔒</div>
+            <h3>Locks</h3>
+        </a>
+        <a href="{% url 'services_field' 'painting' %}" class="category-card">
+            <div class="category-icon">🖌️</div>
+            <h3>Painting</h3>
+        </a>
+        <a href="{% url 'services_field' 'plumbing' %}" class="category-card">
+            <div class="category-icon">🚿</div>
+            <h3>Plumbing</h3>
+        </a>
+        <a href="{% url 'services_field' 'water-heaters' %}" class="category-card">
+            <div class="category-icon">🔥</div>
+            <h3>Water Heaters</h3>
+        </a>
+    </div>
+</div>
 {% endblock %}

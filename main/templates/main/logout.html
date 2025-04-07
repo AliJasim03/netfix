@@ -1,9 +1,61 @@
 {% extends 'main/base.html' %} 
-    {% block title %}
-        Bye bye
-    {% endblock %}
+{% block title %}
+    Logged Out - NetFix
+{% endblock %}
 
 {% block content %}
-    <p style="font-family: Georgia, 'Times New Roman', Times, serif; font-size: 80px;">Bye! Hope to see you soon.</p>
-    <a href="/" style="display: block; text-align: center; margin-top: 60px;">Return to home page</a>
+<div class="logout-container">
+    <div class="logout-icon">👋</div>
+    <h1 class="logout-title">You've been logged out</h1>
+    <p class="logout-message">Thank you for using NetFix. We hope to see you again soon!</p>
+
+    <div class="logout-actions">
+        <a href="{% url 'login_user' %}" class="button">Log In Again</a>
+        <a href="{% url 'main:home' %}" class="button secondary">Back to Home</a>
+    </div>
+</div>
+
+<style>
+    .logout-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 3rem 2rem;
+        text-align: center;
+        background-color: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+    }
+
+    .logout-icon {
+        font-size: 4rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .logout-title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .logout-message {
+        color: var(--text-light);
+        font-size: 1.125rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .logout-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .button.secondary {
+        background-color: transparent;
+        border: 2px solid var(--primary-color);
+        color: var(--primary-color);
+    }
+
+    .button.secondary:hover {
+        background-color: rgba(238, 94, 75, 0.1);
+    }
+</style>
 {% endblock %}

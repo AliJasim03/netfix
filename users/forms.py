@@ -76,8 +76,70 @@ class CustomerSignUpForm(UserCreationForm):
 
 
 class CompanySignUpForm(UserCreationForm):
-    pass
+    email = forms.EmailField(
+        required=True,
+        widget=forms.EmailInput(attrs={
+            'placeholder': 'Enter Email'
+        }),
+        validators=[validate_email]
+    )
+    field = forms.ChoiceField(
+        required=True,
+        choices=(('Air Conditioner', 'Air Conditioner'),
+                 ('All in One', 'All in One'),
+                 ('Carpentry', 'Carpentry'),
+                 ('Electricity', 'Electricity'),
+                 ('Gardening', 'Gardening'),
+                 ('Home Machines', 'Home Machines'),
+                 ('House Keeping', 'House Keeping'),
+                 ('Interior Design', 'Interior Design'),
+                 ('Locks', 'Locks'),
+                 ('Painting', 'Painting'),
+                 ('Plumbing', 'Plumbing'),
+                 ('Water Heaters', 'Water Heaters')),
+        widget=forms.Select(attrs={
+            'placeholder': 'Select Field of Work'
+        })
+    )
+    password1 = forms.CharField(
+        label="Password",
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Enter Password'
+        }),
+        help_text=UserCreationForm().fields['password1'].help_text
+    )
+    password2 = forms.CharField(
+        label="Confirm Password",
+        widget=forms.PasswordInput(attrs={
+            'placeholder': 'Confirm Password'
+        }),
+        help_text=UserCreationForm().fields['password2'].help_text
+    )
 
+    class Meta(UserCreationForm.Meta):
+        model = User
+        fields = ['username', 'email', 'password1', 'password2', 'field']
+        widgets = {
+            'username': forms.TextInput(attrs={
+                'placeholder': 'Enter Username'
+            }),
+        }
+
+    @transaction.atomic
+    def save(self, commit=True):
+        # Save the User model first
+        user = super().save(commit=False)
+        user.email = self.cleaned_data.get('email')
+        user.is_company = True  # Mark the user as a company
+        if commit:
+            user.save()
+
+            # Create the Company instance and link it to the user
+            Company.objects.create(
+                user=user,
+                field=self.cleaned_data.get('field')
+            )
+        return user
 
 class UserLoginForm(forms.Form):
     def __init__(self, *args, **kwargs):

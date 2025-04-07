@@ -32,3 +32,28 @@ class Service(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class ServiceHistory(models.Model):
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    address = models.CharField(max_length=255)
+    service_time = models.DecimalField(decimal_places=1, max_digits=4)
+    price = models.DecimalField(decimal_places=2, max_digits=10)
+    request_date = models.DateTimeField(auto_now_add=True)
+
+    def calculate_price(self):
+        """Calculate the total price based on service time and service price per hour"""
+        return self.service_time * self.service.price_hour
+
+    def save(self, *args, **kwargs):
+        if not self.price:
+            self.price = self.calculate_price()
+        super(ServiceHistory, self).save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.customer.user.username} - {self.service.name} - {self.request_date.strftime('%Y-%m-%d')}"
+
+    class Meta:
+        ordering = ['-request_date']
+        verbose_name_plural = "Service Histories"

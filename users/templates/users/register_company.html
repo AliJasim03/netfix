@@ -1,13 +1,156 @@
 {% extends 'main/base.html' %} 
 {% block title %}
   Company Registration
-{%endblock %}
+{% endblock %}
 
 {% block content %}
-    <form method="POST">
-        {% csrf_token %}
-        {{form}}
-        <span class="helptext">Choose Field Above</span>
-        <button type="submit" name="register">Register</button>
-    </form>
+<div class="register-container">
+    <h1 class="title">Register as Company</h1>
+
+    <div class="register-form">
+        <form method="POST">
+            {% csrf_token %}
+
+            {% if form.non_field_errors %}
+                <div class="form-errors">
+                    {% for error in form.non_field_errors %}
+                        <p class="error-message">{{ error }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Company Username</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <p class="error-message">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.email.id_for_label }}">Email</label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <p class="error-message">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.field.id_for_label }}">Field of Expertise</label>
+                {{ form.field }}
+                <p class="help-text">Select your primary field of expertise</p>
+                {% if form.field.errors %}
+                    <p class="error-message">{{ form.field.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password1.id_for_label }}">Password</label>
+                {{ form.password1 }}
+                <p class="help-text">{{ form.password1.help_text }}</p>
+                {% if form.password1.errors %}
+                    <p class="error-message">{{ form.password1.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                    <p class="error-message">{{ form.password2.errors.0 }}</p>
+                {% endif %}
+            </div>
+
+            <div class="field-info">
+                <h3>About Fields of Expertise</h3>
+                <p>Select the field that best represents your company's specialty. If you offer multiple types of services, select "All in One".</p>
+                <ul>
+                    <li><strong>All in One</strong>: Can create services in any category</li>
+                    <li><strong>Specialized Field</strong>: Can only create services in your selected field</li>
+                </ul>
+            </div>
+
+            <button type="submit" name="register" class="register-button">Register</button>
+        </form>
+    </div>
+
+    <div class="login-footer">
+        <p>Already have an account? <a href="{% url 'login_user' %}">Log in</a></p>
+        <p>Want to register as a customer? <a href="{% url 'register_customer' %}">Register as Customer</a></p>
+    </div>
+</div>
+
+<style>
+    .register-container {
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: white;
+        border-radius: var(--radius-lg);
+        box-shadow: var(--shadow-md);
+    }
+
+    .register-form form {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .form-errors {
+        padding: 1rem;
+        background-color: rgba(239, 68, 68, 0.1);
+        border-radius: var(--radius-md);
+        margin-bottom: 1rem;
+    }
+
+    .register-button {
+        width: 100%;
+        padding: 0.75rem;
+        background-color: var(--secondary-color);
+        color: white;
+        border: none;
+        border-radius: var(--radius-md);
+        font-weight: 500;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .register-button:hover {
+        background-color: var(--secondary-light);
+    }
+
+    .login-footer {
+        text-align: center;
+        margin-top: 2rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border-color);
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .help-text {
+        font-size: 0.875rem;
+        color: var(--text-light);
+        margin-top: 0.25rem;
+    }
+
+    .field-info {
+        padding: 1.5rem;
+        background-color: #f9fafb;
+        border-radius: var(--radius-md);
+        margin-bottom: 1rem;
+    }
+
+    .field-info h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .field-info ul {
+        margin-top: 0.5rem;
+    }
+</style>
 {% endblock %}

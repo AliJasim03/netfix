@@ -1,22 +1,100 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="{% static 'css/style.css' %}"
-    />
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}Title{% endblock %}</title>
-  </head>
-  <body>
-    {% include 'main/navbar.html' %}
-    <!-- places the content of navbar.html here -->
-    <div class='content'>
-      {% block content %} replace me {% endblock %}
+{% extends 'main/base.html' %}
+{% block title %}
+    {% if user.is_customer %}
+        Customer Profile - {{ user.username }}
+    {% else %}
+        Company Profile - {{ user.username }}
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <div class="profile-avatar">
+            {{ user.username|first|upper }}
+        </div>
+        <div class="profile-info">
+            <h1 class="profile-name">{{ user.username }}</h1>
+            <p class="profile-email">{{ user.email }}</p>
+
+            {% if user.is_customer %}
+                <span class="profile-type customer">Customer</span>
+                {% if user_age %}
+                    <p class="profile-age">{{ user_age }} years old</p>
+                {% endif %}
+            {% else %}
+                <span class="profile-type company">{{ user.company.field }} Company</span>
+                <p class="profile-field">Field: {{ user.company.field }}</p>
+            {% endif %}
+        </div>
     </div>
-  </body>
-</html>
+
+    {% if user.is_customer %}
+        <div class="service-history-section">
+            <h2 class="section-title">Service History</h2>
+
+            {% if sh %}
+                <div class="service-history">
+                    {% for service in sh %}
+                        <div class="history-card">
+                            <div class="history-info">
+                                <h3 class="history-service">
+                                    <a href="{% url 'index' service.service.id %}">{{ service.service.name }}</a>
+                                    <span class="history-field">{{ service.service.field }}</span>
+                                </h3>
+                                <p class="history-meta">
+                                    Provider: <a href="{% url 'company_profile' service.service.company.user.username %}">{{ service.service.company.user.username }}</a>
+                                </p>
+                                <p class="history-meta">
+                                    Service Time: {{ service.service_time }} hours
+                                </p>
+                            </div>
+                            <div class="history-details">
+                                <p class="history-price">{{ service.price }}€</p>
+                                <p class="history-date">{{ service.request_date|date:"F j, Y" }}</p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-history">
+                    <p>You haven't requested any services yet.</p>
+                    <a href="{% url 'services_list' %}" class="button">Browse Services</a>
+                </div>
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="company-services-section">
+            <h2 class="section-title">Available Services</h2>
+
+            {% if services %}
+                <div class="services-grid">
+                    {% for service in services %}
+                        <div class="service-card">
+                            <div class="service-card-header">
+                                <h3 class="service-title">{{ service.name }}</h3>
+                                <span class="service-badge">{{ service.field }}</span>
+                            </div>
+                            <div class="service-card-body">
+                                <p class="service-description">
+                                    {{ service.description|truncatechars:150 }}
+                                </p>
+                            </div>
+                            <div class="service-card-footer">
+                                <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
+                                <div class="service-date">Created on {{ service.date|date:"F j, Y" }}</div>
+                                <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <div class="no-services">
+                    <p>You haven't created any services yet.</p>
+                    <a href="{% url 'services_create' %}" class="button">Create Service</a>
+                </div>
+            {% endif %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
