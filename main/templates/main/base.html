@@ -1,100 +1,77 @@
-{% extends 'main/base.html' %}
-{% block title %}
-    {% if user.is_customer %}
-        Customer Profile - {{ user.username }}
-    {% else %}
-        Company Profile - {{ user.username }}
-    {% endif %}
-{% endblock %}
-
-{% block content %}
-<div class="profile-container">
-    <div class="profile-header">
-        <div class="profile-avatar">
-            {{ user.username|first|upper }}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NetFix{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Lexend:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <a href="{% url 'main:home' %}">
+                <img src="{% static 'css/logo.png' %}" alt="NetFix" width="40"> NetFix
+            </a>
         </div>
-        <div class="profile-info">
-            <h1 class="profile-name">{{ user.username }}</h1>
-            <p class="profile-email">{{ user.email }}</p>
-
-            {% if user.is_customer %}
-                <span class="profile-type customer">Customer</span>
-                {% if user_age %}
-                    <p class="profile-age">{{ user_age }} years old</p>
+        <ul>
+            <li><a href="{% url 'main:home' %}">Home</a></li>
+            <li class="dropdown">
+                <a href="{% url 'services_list' %}">Services</a>
+                <ul>
+                    <li><a href="{% url 'services_field' 'air-conditioner' %}">Air Conditioner</a></li>
+                    <li><a href="{% url 'services_field' 'carpentry' %}">Carpentry</a></li>
+                    <li><a href="{% url 'services_field' 'electricity' %}">Electricity</a></li>
+                    <li><a href="{% url 'services_field' 'gardening' %}">Gardening</a></li>
+                    <li><a href="{% url 'services_field' 'home-machines' %}">Home Machines</a></li>
+                    <li><a href="{% url 'services_field' 'house-keeping' %}">House Keeping</a></li>
+                    <li><a href="{% url 'services_field' 'interior-design' %}">Interior Design</a></li>
+                    <li><a href="{% url 'services_field' 'locks' %}">Locks</a></li>
+                    <li><a href="{% url 'services_field' 'painting' %}">Painting</a></li>
+                    <li><a href="{% url 'services_field' 'plumbing' %}">Plumbing</a></li>
+                    <li><a href="{% url 'services_field' 'water-heaters' %}">Water Heaters</a></li>
+                </ul>
+            </li>
+            {% if user.is_authenticated %}
+                {% if user.is_company %}
+                    <li><a href="{% url 'company_profile' user.username %}">My Profile</a></li>
+                    <li><a href="{% url 'services_create' %}">Create Service</a></li>
+                {% elif user.is_customer %}
+                    <li><a href="{% url 'customer_profile' user.username %}">My Profile</a></li>
                 {% endif %}
+            {% endif %}
+        </ul>
+        <div class="navbar-right">
+            {% if user.is_authenticated %}
+                <a href="{% url 'main:logout' %}" class="button">Logout</a>
             {% else %}
-                <span class="profile-type company">{{ user.company.field }} Company</span>
-                <p class="profile-field">Field: {{ user.company.field }}</p>
+                <a href="{% url 'login_user' %}">Login</a>
+                <a href="{% url 'register' %}" class="button">Sign Up</a>
             {% endif %}
         </div>
+    </nav>
+
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li class="message {{ message.tags }}">{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="content">
+        {% block content %}{% endblock %}
     </div>
 
-    {% if user.is_customer %}
-        <div class="service-history-section">
-            <h2 class="section-title">Service History</h2>
+    <footer>
+        <p>&copy; {% now "Y" %} NetFix. All rights reserved.</p>
+        <p>Find trusted professionals for your home service needs.</p>
+    </footer>
 
-            {% if sh %}
-                <div class="service-history">
-                    {% for service in sh %}
-                        <div class="history-card">
-                            <div class="history-info">
-                                <h3 class="history-service">
-                                    <a href="{% url 'index' service.service.id %}">{{ service.service.name }}</a>
-                                    <span class="history-field">{{ service.service.field }}</span>
-                                </h3>
-                                <p class="history-meta">
-                                    Provider: <a href="{% url 'company_profile' service.service.company.user.username %}">{{ service.service.company.user.username }}</a>
-                                </p>
-                                <p class="history-meta">
-                                    Service Time: {{ service.service_time }} hours
-                                </p>
-                            </div>
-                            <div class="history-details">
-                                <p class="history-price">{{ service.price }}€</p>
-                                <p class="history-date">{{ service.request_date|date:"F j, Y" }}</p>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="no-history">
-                    <p>You haven't requested any services yet.</p>
-                    <a href="{% url 'services_list' %}" class="button">Browse Services</a>
-                </div>
-            {% endif %}
-        </div>
-    {% else %}
-        <div class="company-services-section">
-            <h2 class="section-title">Available Services</h2>
-
-            {% if services %}
-                <div class="services-grid">
-                    {% for service in services %}
-                        <div class="service-card">
-                            <div class="service-card-header">
-                                <h3 class="service-title">{{ service.name }}</h3>
-                                <span class="service-badge">{{ service.field }}</span>
-                            </div>
-                            <div class="service-card-body">
-                                <p class="service-description">
-                                    {{ service.description|truncatechars:150 }}
-                                </p>
-                            </div>
-                            <div class="service-card-footer">
-                                <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
-                                <div class="service-date">Created on {{ service.date|date:"F j, Y" }}</div>
-                                <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="no-services">
-                    <p>You haven't created any services yet.</p>
-                    <a href="{% url 'services_create' %}" class="button">Create Service</a>
-                </div>
-            {% endif %}
-        </div>
-    {% endif %}
-</div>
-{% endblock %}
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
