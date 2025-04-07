@@ -129,3 +129,7 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Default primary key field type
+# Added to address the warning about auto-created primary keys
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
