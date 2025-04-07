@@ -1,45 +1,174 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
-    User Profile
+    {% if user.is_customer %}
+        Customer Profile - {{ user.username }}
+    {% else %}
+        Company Profile - {{ user.username }}
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
 
 {% block content %}
-    {% if user.is_customer %}
-        <div style="display: ruby;">
-            <h1>{{ user.username }} ({{user_age}} y/o)</h1>
-            <p>{{ user.email }}</p>
-            <p style="float: right;">Customer</p>
+    <div class="profile-container">
+        <div class="profile-header">
+            <div class="profile-avatar">
+                {% if user.is_customer %}
+                    <i class="fas fa-user"></i>
+                {% else %}
+                    <i class="fas fa-building"></i>
+                {% endif %}
         </div>
-    {% else %}
-        <div style="display: ruby;">
-            <h1>{{ user.username }}</h1>
-            <p> {{ user.email }}</p>
-            <p style="float: right;">{{user.company.field}} Company</p>
-        </div>
-       {% endif %}
-    {% if 'customer' in request.path %}
-        <p class="title">Previous Requested Services</p>
-    {% else %}
-        <p class="title">Available Services</p>
-    {% endif %}
-    {% if user.is_customer %}
-        {% for service in sh %}
-            <div>
-                <a href="/services/{{service.service.id}}">{{service.service.name}}</a> ({{service.service.field}})
-                <p style="margin: 0; display: inline-block;"> ❱❱ {{service.price}}</p>
-                <p style="margin: 0; display: inline-block;"> ❱❱ {{ service.request_date }}</p>
-                <p style="float: right; margin: 0;">
-                    by <a href="/company/{{service.service.company.user}}">{{service.service.company.user}}</a>
-                </p> 
+            <div class="profile-info">
+                <h1 class="profile-name">{{ user.username }}</h1>
+                <p class="profile-email"><i class="fas fa-envelope"></i> {{ user.email }}</p>
+
+                {% if user.is_customer %}
+                    <span class="profile-badge customer">
+                    <i class="fas fa-user"></i> Customer
+                </span>
+                    {% if user_age %}
+                        <p class="profile-meta"><i class="fas fa-birthday-cake"></i> {{ user_age }} years old</p>
+                    {% endif %}
+                {% else %}
+                    <span class="profile-badge company">
+                    <i class="fas fa-briefcase"></i> {{ user.company.field }} Company
+                </span>
+                    <p class="profile-meta">
+                        <i class="fas fa-star"></i> Rating: {{ user.company.rating }}/5
+                    </p>
+                {% endif %}
             </div>
-            <div class="line"></div>
-        {% endfor %}
-    {% else %}
-        {% for service in services %}
-        <div class="list_services_profile">
-            <a href="/services/{{service.id}}">{{service.name}}</a>-- {{service.price_hour}}€/hour
-            <div class="line"></div>
         </div>
-        {% endfor %}
-    {% endif %}
+
+        <div class="profile-content">
+            {% if user.is_customer %}
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-history"></i> Service History</h2>
+                </div>
+
+                {% if sh %}
+                    <div class="service-history">
+                        {% for service in sh %}
+                            <div class="history-item">
+                                <div class="history-item-header">
+                                    <h3 class="history-service-name">
+                                        <a href="{% url 'index' service.service.id %}">{{ service.service.name }}</a>
+                                    </h3>
+                                    <span class="history-service-badge">
+                                    {% if service.service.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                                    {% elif service.service.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                                    {% elif service.service.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                                    {% elif service.service.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                                    {% elif service.service.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                                    {% elif service.service.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                                    {% elif service.service.field == 'Interior Design' %}
+                                        <i class="fas fa-paint-roller"></i>
+                                    {% elif service.service.field == 'Locks' %}<i class="fas fa-lock"></i>
+                                    {% elif service.service.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                                    {% elif service.service.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                                    {% elif service.service.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                                    {% endif %}
+                                        {{ service.service.field }}
+                                </span>
+                                </div>
+                                <div class="history-item-details">
+                                    <div class="history-info">
+                                        <p class="history-meta">
+                                            <i class="fas fa-building"></i> Provider:
+                                            <a href="{% url 'company_profile' service.service.company.user %}">
+                                                {{ service.service.company.user }}
+                                            </a>
+                                        </p>
+                                        <p class="history-meta">
+                                            <i class="fas fa-clock"></i> Service time: {{ service.service_time }} hours
+                                        </p>
+                                    </div>
+                                    <div class="history-price-date">
+                                        <p class="history-price"><i class="fas fa-euro-sign"></i> {{ service.price }}
+                                        </p>
+                                        <p class="history-date">
+                                            <i class="fas fa-calendar-alt"></i> {{ service.request_date|date:"F j, Y" }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-history">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                        <p>You haven't requested any services yet.</p>
+                        <a href="{% url 'services_list' %}" class="btn btn-primary">
+                            <i class="fas fa-search"></i> Browse Services
+                        </a>
+                    </div>
+                {% endif %}
+            {% else %}
+                <div class="section-header">
+                    <h2 class="section-title"><i class="fas fa-list"></i> Available Services</h2>
+                    <a href="{% url 'services_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Add New Service
+                    </a>
+                </div>
+
+                {% if services %}
+                    <div class="company-services">
+                        {% for service in services %}
+                            <div class="service-card">
+                                <div class="service-card-header">
+                                    <h3 class="service-card-title">
+                                        <a href="{% url 'index' service.id %}">{{ service.name }}</a>
+                                    </h3>
+                                    <span class="service-card-badge">
+                                    {% if service.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                                    {% elif service.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                                    {% elif service.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                                    {% elif service.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                                    {% elif service.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                                    {% elif service.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                                    {% elif service.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                                    {% elif service.field == 'Locks' %}<i class="fas fa-lock"></i>
+                                    {% elif service.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                                    {% elif service.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                                    {% elif service.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                                    {% endif %}
+                                        {{ service.field }}
+                                </span>
+                                </div>
+                                <div class="service-card-body">
+                                    <p class="service-card-price">
+                                        <i class="fas fa-tag"></i> {{ service.price_hour }}€<span class="price-unit">/hour</span>
+                                    </p>
+                                    <p class="service-card-date">
+                                        <i class="fas fa-calendar-alt"></i> Created: {{ service.date|date:"F j, Y" }}
+                                    </p>
+                                </div>
+                                <div class="service-card-actions">
+                                    <a href="{% url 'index' service.id %}" class="btn btn-primary btn-sm">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <a href="#" class="btn btn-secondary btn-sm">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-services">
+                        <i class="fas fa-info-circle fa-2x"></i>
+                        <p>You haven't created any services yet.</p>
+                        <a href="{% url 'services_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Create Your First Service
+                        </a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
 {% endblock %}

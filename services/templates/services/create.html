@@ -1,57 +1,114 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
     Create New Service
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/services-create.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="create-service-container">
-    <h1 class="title">Create New Service</h1>
-    
+    <div class="create-service-header">
+        <h1 class="title"><i class="fas fa-plus-circle"></i> Create New Service</h1>
+        <p class="create-service-subtitle">Share your professional expertise with potential customers</p>
+    </div>
+
     {% if user.is_company %}
-        <div class="create-service-form">
-            <form method="POST">
-                {% csrf_token %}
-                
-                <div class="form-group">
-                    <label for="{{ form.name.id_for_label }}">Service Name</label>
-                    {{ form.name }}
-                    {% if form.name.errors %}
-                        <p class="error-message">{{ form.name.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.description.id_for_label }}">Description</label>
-                    {{ form.description }}
-                    {% if form.description.errors %}
-                        <p class="error-message">{{ form.description.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.price_hour.id_for_label }}">Price per Hour (€)</label>
-                    {{ form.price_hour }}
-                    {% if form.price_hour.errors %}
-                        <p class="error-message">{{ form.price_hour.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <div class="form-group">
-                    <label for="{{ form.field.id_for_label }}">Service Field</label>
-                    {{ form.field }}
-                    {% if form.field.errors %}
-                        <p class="error-message">{{ form.field.errors.0 }}</p>
-                    {% endif %}
-                </div>
-                
-                <button type="submit" class="submit-button">Create Service</button>
-            </form>
+        <div class="create-service-card">
+            <div class="create-service-form">
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="{{ form.name.id_for_label }}">
+                            <i class="fas fa-signature"></i> Service Name
+                        </label>
+                        {{ form.name }}
+                        <p class="help-text">Choose a descriptive name for your service</p>
+                        {% if form.name.errors %}
+                            <p class="error-message">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.name.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-group">
+                        <label for="{{ form.description.id_for_label }}">
+                            <i class="fas fa-align-left"></i> Description
+                        </label>
+                        {{ form.description }}
+                        <p class="help-text">Provide details about what your service includes</p>
+                        {% if form.description.errors %}
+                            <p class="error-message">
+                                <i class="fas fa-exclamation-circle"></i> {{ form.description.errors.0 }}
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="{{ form.price_hour.id_for_label }}">
+                                <i class="fas fa-euro-sign"></i> Price per Hour (€)
+                            </label>
+                            {{ form.price_hour }}
+                            <p class="help-text">Set your hourly rate</p>
+                            {% if form.price_hour.errors %}
+                                <p class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i> {{ form.price_hour.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+
+                        <div class="form-group">
+                            <label for="{{ form.field.id_for_label }}">
+                                <i class="fas fa-briefcase"></i> Service Field
+                            </label>
+                            {{ form.field }}
+                            <p class="help-text">Select the category for your service</p>
+                            {% if form.field.errors %}
+                                <p class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i> {{ form.field.errors.0 }}
+                                </p>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Create Service
+                        </button>
+                        <a href="{% url 'services_list' %}" class="btn btn-outline">
+                            <i class="fas fa-times"></i> Cancel
+                        </a>
+                    </div>
+                </form>
+            </div>
+            <div class="create-service-tips">
+                <h3><i class="fas fa-lightbulb"></i> Tips for a Great Service Listing</h3>
+                <ul>
+                    <li><i class="fas fa-check"></i> Be specific about what's included</li>
+                    <li><i class="fas fa-check"></i> Highlight your experience and expertise</li>
+                    <li><i class="fas fa-check"></i> Set a competitive but fair price</li>
+                    <li><i class="fas fa-check"></i> Mention any guarantees or warranties</li>
+                    <li><i class="fas fa-check"></i> Describe your service process</li>
+                </ul>
+            </div>
         </div>
     {% else %}
         <div class="not-authorized">
+            <i class="fas fa-lock fa-3x"></i>
+            <h2>Access Restricted</h2>
             <p>You must be logged in as a company to create services.</p>
             {% if not user.is_authenticated %}
-                <a href="{% url 'login_user' %}" class="button">Login</a>
+                <a href="{% url 'login_user' %}" class="btn btn-primary">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </a>
+                <a href="{% url 'register_company' %}" class="btn btn-outline">
+                    <i class="fas fa-user-plus"></i> Register as Company
+                </a>
             {% endif %}
         </div>
     {% endif %}

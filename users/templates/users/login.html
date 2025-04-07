@@ -3,6 +3,11 @@
     Login to NetFix
 {% endblock %}
 
+{% load static %}
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/login.css' %}">
+{% endblock %}
+
 {% block content %}
     <div class="login-container">
         <h1 class="title">Login</h1>
@@ -20,22 +25,36 @@
                 {% endif %}
 
                 <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    <label for="{{ form.username.id_for_label }}">
+                        <i class="fas fa-user"></i> Username
+                    </label>
                     {{ form.username }}
                     {% if form.username.errors %}
-                        <p class="error-message">{{ form.username.errors.0 }}</p>
+                        <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.username.errors.0 }}
+                        </p>
                     {% endif %}
                 </div>
 
                 <div class="form-group">
-                    <label for="{{ form.password.id_for_label }}">Password</label>
-                    {{ form.password }}
+                    <label for="{{ form.password.id_for_label }}">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="password-input-wrapper">
+                        {{ form.password }}
+                        <span class="password-toggle-icon" id="password-toggle">
+            <i class="fas fa-eye"></i>
+        </span>
+                    </div>
                     {% if form.password.errors %}
-                        <p class="error-message">{{ form.password.errors.0 }}</p>
+                        <p class="error-message">
+                            <i class="fas fa-exclamation-circle"></i> {{ form.password.errors.0 }}
+                        </p>
                     {% endif %}
                 </div>
 
-                <button type="submit" class="login-button">Login</button>
+                <button type="submit" class="login-button">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
             </form>
         </div>
 
@@ -43,52 +62,21 @@
             <p>Don't have an account yet? <a href="{% url 'register' %}">Sign up</a></p>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordField = document.getElementById('{{ form.password.id_for_label }}');
+            const toggleButton = document.getElementById('password-toggle');
 
-    <style>
-        .login-container {
-            max-width: 500px;
-            margin: 0 auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-md);
-        }
-
-        .login-form form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .form-errors {
-            padding: 1rem;
-            background-color: rgba(239, 68, 68, 0.1);
-            border-radius: var(--radius-md);
-            margin-bottom: 1rem;
-        }
-
-        .login-button {
-            width: 100%;
-            padding: 0.75rem;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: var(--radius-md);
-            font-weight: 500;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .login-button:hover {
-            background-color: var(--primary-dark);
-        }
-
-        .login-footer {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-color);
-        }
-    </style>
+            if (toggleButton && passwordField) {
+                toggleButton.addEventListener('click', function () {
+                    const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordField.setAttribute('type', type);
+                    // Change icon based on password visibility
+                    this.innerHTML = type === 'password' ?
+                        '<i class="fas fa-eye"></i>' :
+                        '<i class="fas fa-eye-slash"></i>';
+                });
+            }
+        });
+    </script>
 {% endblock %}

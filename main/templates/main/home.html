@@ -1,96 +1,203 @@
-{% extends 'main/base.html' %} 
+{% extends 'main/base.html' %}
+{% load static %}
 {% block title %}
     NetFix - Home Services Marketplace
 {% endblock %}
 
 {% block content %}
-<div class="home-container">
-    <img class="home-logo" src="static/css/logo.png" alt="NetFix Logo">
-    <h1 class="site-title">NetFix</h1>
-    <p class="site-subtitle">One platform for all your home service needs. Find trusted professionals for plumbing, electrical work, painting, and more.</p>
+    <div class="hero-section">
+        <div class="hero-content">
+            <div class="hero-logo">
+                <i class="fas fa-tools fa-3x"></i>
+            </div>
+            <h1 class="hero-title">NetFix</h1>
+            <p class="hero-subtitle">One platform for all your home service needs. Find trusted professionals for
+                plumbing, electrical work, painting, and more.</p>
 
-    <div class="home-cta">
-        {% if user.is_authenticated %}
-            <a href="{% url 'services_list' %}" class="button cta-button">Browse Services</a>
-            {% if user.is_company %}
-                <a href="{% url 'services_create' %}" class="button cta-button secondary">Create Service</a>
-            {% endif %}
-        {% else %}
-            <a href="{% url 'login_user' %}" class="button cta-button">Log In</a>
-            <a href="{% url 'register' %}" class="button cta-button secondary">Sign Up</a>
-        {% endif %}
+            <div class="hero-cta">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'services_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-search"></i> Browse Services
+                    </a>
+                    {% if user.is_company %}
+                        <a href="{% url 'services_create' %}" class="btn btn-outline btn-lg">
+                            <i class="fas fa-plus-circle"></i> Create Service
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <a href="{% url 'login_user' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-sign-in-alt"></i> Log In
+                    </a>
+                    <a href="{% url 'register' %}" class="btn btn-outline btn-lg">
+                        <i class="fas fa-user-plus"></i> Sign Up
+                    </a>
+                {% endif %}
+            </div>
     </div>
 </div>
 
 {% if popular_services %}
-<div class="popular-services">
-    <h2 class="title">Most Requested Services</h2>
-    <div class="popular-services-grid">
+    <section class="popular-services-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-star"></i> Most Requested Services</h2>
+            <p class="section-subtitle">Discover the top services preferred by our customers</p>
+        </div>
+
+        <div class="popular-services-grid">
         {% for service in popular_services %}
-            <div class="popular-service-card">
-                <span class="popular-badge">Popular</span>
-                <div class="popular-service-content">
-                    <h3 class="popular-service-title">{{ service.name }}</h3>
-                    <p class="popular-service-provider">by <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></p>
-                    <div class="popular-service-meta">
-                        <span class="popular-service-price">{{ service.price_hour }}€/hour</span>
-                        <span class="popular-service-count">{{ service.request_count }} requests</span>
+            <div class="service-card">
+                <div class="service-card-badge">
+                    <i class="fas fa-fire"></i> Popular
+                </div>
+                <div class="service-card-body">
+                    <h3 class="service-card-title">{{ service.name }}</h3>
+                    <div class="service-card-company">
+                        <i class="fas fa-building"></i> by
+                        <a href="{% url 'company_profile' service.company.user.username %}">
+                            {{ service.company.user.username }}
+                        </a>
+                    </div>
+                    <div class="service-card-meta">
+                        <div class="service-card-price">
+                            <i class="fas fa-tag"></i> {{ service.price_hour }}€/hour
+                        </div>
+                        <div class="service-card-requests">
+                            <i class="fas fa-chart-bar"></i> {{ service.request_count }} requests
+                        </div>
                     </div>
                 </div>
-                <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                <div class="service-card-footer">
+                    <a href="{% url 'index' service.id %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-arrow-right"></i> View Details
+                    </a>
+                </div>
             </div>
         {% endfor %}
     </div>
-</div>
+
+        <div class="view-all-link">
+            <a href="{% url 'services_list' %}" class="btn btn-outline">
+                <i class="fas fa-th-list"></i> View All Services
+            </a>
+        </div>
+    </section>
 {% endif %}
 
-<div class="service-categories">
-    <h2 class="title">Browse by Category</h2>
-    <div class="services-grid">
+    <section class="categories-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-th-large"></i> Browse by Category</h2>
+            <p class="section-subtitle">Find the right professional for your specific needs</p>
+        </div>
+
+        <div class="categories-grid">
         <a href="{% url 'services_field' 'air-conditioner' %}" class="category-card">
-            <div class="category-icon">🌡️</div>
-            <h3>Air Conditioner</h3>
+            <div class="category-icon">
+                <i class="fas fa-snowflake"></i>
+            </div>
+            <h3 class="category-title">Air Conditioner</h3>
         </a>
         <a href="{% url 'services_field' 'carpentry' %}" class="category-card">
-            <div class="category-icon">🪑</div>
-            <h3>Carpentry</h3>
+            <div class="category-icon">
+                <i class="fas fa-hammer"></i>
+            </div>
+            <h3 class="category-title">Carpentry</h3>
         </a>
         <a href="{% url 'services_field' 'electricity' %}" class="category-card">
-            <div class="category-icon">⚡</div>
-            <h3>Electricity</h3>
+            <div class="category-icon">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h3 class="category-title">Electricity</h3>
         </a>
         <a href="{% url 'services_field' 'gardening' %}" class="category-card">
-            <div class="category-icon">🌱</div>
-            <h3>Gardening</h3>
+            <div class="category-icon">
+                <i class="fas fa-leaf"></i>
+            </div>
+            <h3 class="category-title">Gardening</h3>
         </a>
         <a href="{% url 'services_field' 'home-machines' %}" class="category-card">
-            <div class="category-icon">🧰</div>
-            <h3>Home Machines</h3>
+            <div class="category-icon">
+                <i class="fas fa-tools"></i>
+            </div>
+            <h3 class="category-title">Home Machines</h3>
         </a>
         <a href="{% url 'services_field' 'house-keeping' %}" class="category-card">
-            <div class="category-icon">🧹</div>
-            <h3>House Keeping</h3>
+            <div class="category-icon">
+                <i class="fas fa-broom"></i>
+            </div>
+            <h3 class="category-title">House Keeping</h3>
         </a>
         <a href="{% url 'services_field' 'interior-design' %}" class="category-card">
-            <div class="category-icon">🎨</div>
-            <h3>Interior Design</h3>
+            <div class="category-icon">
+                <i class="fas fa-paint-roller"></i>
+            </div>
+            <h3 class="category-title">Interior Design</h3>
         </a>
         <a href="{% url 'services_field' 'locks' %}" class="category-card">
-            <div class="category-icon">🔒</div>
-            <h3>Locks</h3>
+            <div class="category-icon">
+                <i class="fas fa-lock"></i>
+            </div>
+            <h3 class="category-title">Locks</h3>
         </a>
         <a href="{% url 'services_field' 'painting' %}" class="category-card">
-            <div class="category-icon">🖌️</div>
-            <h3>Painting</h3>
+            <div class="category-icon">
+                <i class="fas fa-fill-drip"></i>
+            </div>
+            <h3 class="category-title">Painting</h3>
         </a>
         <a href="{% url 'services_field' 'plumbing' %}" class="category-card">
-            <div class="category-icon">🚿</div>
-            <h3>Plumbing</h3>
+            <div class="category-icon">
+                <i class="fas fa-faucet"></i>
+            </div>
+            <h3 class="category-title">Plumbing</h3>
         </a>
         <a href="{% url 'services_field' 'water-heaters' %}" class="category-card">
-            <div class="category-icon">🔥</div>
-            <h3>Water Heaters</h3>
+            <div class="category-icon">
+                <i class="fas fa-fire"></i>
+            </div>
+            <h3 class="category-title">Water Heaters</h3>
         </a>
     </div>
-</div>
+    </section>
+
+    <section class="features-section">
+        <div class="section-header">
+            <h2 class="section-title"><i class="fas fa-check-circle"></i> Why Choose NetFix</h2>
+            <p class="section-subtitle">The platform that connects quality services with customers in need</p>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <h3 class="feature-title">Verified Professionals</h3>
+                <p class="feature-description">We carefully verify all service providers to ensure quality and
+                    reliability.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-hand-holding-usd"></i>
+                </div>
+                <h3 class="feature-title">Competitive Pricing</h3>
+                <p class="feature-description">Compare prices and choose the service that fits your budget.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3 class="feature-title">Secure Platform</h3>
+                <p class="feature-description">Your data is protected, and all transactions are secure.</p>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h3 class="feature-title">Save Time</h3>
+                <p class="feature-description">Quickly find and book the services you need, when you need them.</p>
+            </div>
+        </div>
+    </section>
 {% endblock %}

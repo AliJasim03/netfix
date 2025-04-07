@@ -1,156 +1,149 @@
-{% extends 'main/base.html' %} 
+{% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
   Company Registration
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="register-container">
-    <h1 class="title">Register as Company</h1>
+    <h1 class="title"><i class="fas fa-building"></i> Register as Company</h1>
+    <p class="register-subtitle">Create your company account to start offering services</p>
 
-    <div class="register-form">
+    <div class="register-form-card">
         <form method="POST">
             {% csrf_token %}
 
             {% if form.non_field_errors %}
                 <div class="form-errors">
                     {% for error in form.non_field_errors %}
-                        <p class="error-message">{{ error }}</p>
+                        <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ error }}</p>
                     {% endfor %}
                 </div>
             {% endif %}
 
             <div class="form-group">
-                <label for="{{ form.username.id_for_label }}">Company Username</label>
+                <label for="{{ form.username.id_for_label }}">
+                    <i class="fas fa-building"></i> Company Username
+                </label>
                 {{ form.username }}
+                <p class="help-text">Choose a unique username for your company profile</p>
                 {% if form.username.errors %}
-                    <p class="error-message">{{ form.username.errors.0 }}</p>
+                    <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.username.errors.0 }}</p>
                 {% endif %}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.email.id_for_label }}">Email</label>
+                <label for="{{ form.email.id_for_label }}">
+                    <i class="fas fa-envelope"></i> Email
+                </label>
                 {{ form.email }}
+                <p class="help-text">Enter your business email address</p>
                 {% if form.email.errors %}
-                    <p class="error-message">{{ form.email.errors.0 }}</p>
+                    <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.email.errors.0 }}</p>
                 {% endif %}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.field.id_for_label }}">Field of Expertise</label>
+                <label for="{{ form.field.id_for_label }}">
+                    <i class="fas fa-briefcase"></i> Field of Expertise
+                </label>
                 {{ form.field }}
                 <p class="help-text">Select your primary field of expertise</p>
                 {% if form.field.errors %}
-                    <p class="error-message">{{ form.field.errors.0 }}</p>
+                    <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.field.errors.0 }}</p>
                 {% endif %}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.password1.id_for_label }}">Password</label>
-                {{ form.password1 }}
+                <label for="{{ form.password1.id_for_label }}">
+                    <i class="fas fa-lock"></i> Password
+                </label>
+                <div class="password-input-wrapper">
+                    {{ form.password1 }}
+                    <span class="password-toggle-icon" id="password-toggle-1">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
                 <p class="help-text">{{ form.password1.help_text }}</p>
                 {% if form.password1.errors %}
-                    <p class="error-message">{{ form.password1.errors.0 }}</p>
+                    <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.password1.errors.0 }}</p>
                 {% endif %}
             </div>
 
             <div class="form-group">
-                <label for="{{ form.password2.id_for_label }}">Confirm Password</label>
-                {{ form.password2 }}
+                <label for="{{ form.password2.id_for_label }}">
+                    <i class="fas fa-lock"></i> Confirm Password
+                </label>
+                <div class="password-input-wrapper">
+                    {{ form.password2 }}
+                    <span class="password-toggle-icon" id="password-toggle-2">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                </div>
                 {% if form.password2.errors %}
-                    <p class="error-message">{{ form.password2.errors.0 }}</p>
+                    <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.password2.errors.0 }}</p>
                 {% endif %}
             </div>
 
             <div class="field-info">
-                <h3>About Fields of Expertise</h3>
+                <h3><i class="fas fa-info-circle"></i> About Fields of Expertise</h3>
                 <p>Select the field that best represents your company's specialty. If you offer multiple types of services, select "All in One".</p>
                 <ul>
-                    <li><strong>All in One</strong>: Can create services in any category</li>
-                    <li><strong>Specialized Field</strong>: Can only create services in your selected field</li>
+                    <li><i class="fas fa-check"></i> <strong>All in One</strong>: Can create services in any category
+                    </li>
+                    <li><i class="fas fa-check"></i> <strong>Specialized Field</strong>: Can only create services in
+                        your selected field
+                    </li>
                 </ul>
             </div>
 
-            <button type="submit" name="register" class="register-button">Register</button>
+            <div class="form-actions">
+                <button type="submit" name="register" class="btn btn-primary">
+                    <i class="fas fa-building"></i> Register
+                </button>
+                <a href="{% url 'register' %}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back
+                </a>
+            </div>
         </form>
     </div>
 
-    <div class="login-footer">
+    <div class="register-footer">
         <p>Already have an account? <a href="{% url 'login_user' %}">Log in</a></p>
         <p>Want to register as a customer? <a href="{% url 'register_customer' %}">Register as Customer</a></p>
     </div>
 </div>
 
-<style>
-    .register-container {
-        max-width: 600px;
-        margin: 0 auto;
-        padding: 2rem;
-        background-color: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-    }
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordFields = [
+                {
+                    field: document.getElementById('{{ form.password1.id_for_label }}'),
+                    toggle: document.getElementById('password-toggle-1')
+                },
+                {
+                    field: document.getElementById('{{ form.password2.id_for_label }}'),
+                    toggle: document.getElementById('password-toggle-2')
+                }
+            ];
 
-    .register-form form {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-
-    .form-errors {
-        padding: 1rem;
-        background-color: rgba(239, 68, 68, 0.1);
-        border-radius: var(--radius-md);
-        margin-bottom: 1rem;
-    }
-
-    .register-button {
-        width: 100%;
-        padding: 0.75rem;
-        background-color: var(--secondary-color);
-        color: white;
-        border: none;
-        border-radius: var(--radius-md);
-        font-weight: 500;
-        font-size: 1rem;
-        cursor: pointer;
-        transition: var(--transition);
-    }
-
-    .register-button:hover {
-        background-color: var(--secondary-light);
-    }
-
-    .login-footer {
-        text-align: center;
-        margin-top: 2rem;
-        padding-top: 1.5rem;
-        border-top: 1px solid var(--border-color);
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .help-text {
-        font-size: 0.875rem;
-        color: var(--text-light);
-        margin-top: 0.25rem;
-    }
-
-    .field-info {
-        padding: 1.5rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-md);
-        margin-bottom: 1rem;
-    }
-
-    .field-info h3 {
-        margin-top: 0;
-        margin-bottom: 0.5rem;
-    }
-
-    .field-info ul {
-        margin-top: 0.5rem;
-    }
-</style>
+            passwordFields.forEach(item => {
+                if (item.field && item.toggle) {
+                    item.toggle.addEventListener('click', function () {
+                        const type = item.field.getAttribute('type') === 'password' ? 'text' : 'password';
+                        item.field.setAttribute('type', type);
+                        // Change icon based on password visibility
+                        this.innerHTML = type === 'password' ?
+                            '<i class="fas fa-eye"></i>' :
+                            '<i class="fas fa-eye-slash"></i>';
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

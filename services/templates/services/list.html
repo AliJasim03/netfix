@@ -1,38 +1,74 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
     Services List
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/services.css' %}">
+    <link rel="stylesheet" href="{% static 'css/services-list.css' %}">
+{% endblock %}
+
 {% block content %}
     <div class="services-container">
-        <h1 class="title">Available Services</h1>
+        <div class="services-header">
+            <h1 class="title"><i class="fas fa-briefcase"></i> Available Services</h1>
+            <p class="services-subtitle">Browse through our selection of professional services</p>
+        </div>
 
+        <div class="services-actions">
         {% if user.is_company %}
-            <a class="create-service-btn" href="{% url 'services_create' %}">
-                <i class="fa fa-plus"></i> Create New Service
+            <a class="btn btn-primary" href="{% url 'services_create' %}">
+                <i class="fas fa-plus-circle"></i> Create New Service
             </a>
         {% endif %}
 
         <div class="services-filter">
             <form method="GET" class="filter-form">
                 <div class="filter-group">
-                    <label for="field">Filter by Category:</label>
-                    <select name="field" id="field" onchange="this.form.submit()">
+                    <label for="field"><i class="fas fa-filter"></i> Filter by Category:</label>
+                    <select name="field" id="field" class="form-control" onchange="this.form.submit()">
                         <option value="">All Categories</option>
-                        <option value="Air Conditioner" {% if request.GET.field == 'Air Conditioner' %}selected{% endif %}>Air Conditioner</option>
-                        <option value="Carpentry" {% if request.GET.field == 'Carpentry' %}selected{% endif %}>Carpentry</option>
-                        <option value="Electricity" {% if request.GET.field == 'Electricity' %}selected{% endif %}>Electricity</option>
-                        <option value="Gardening" {% if request.GET.field == 'Gardening' %}selected{% endif %}>Gardening</option>
-                        <option value="Home Machines" {% if request.GET.field == 'Home Machines' %}selected{% endif %}>Home Machines</option>
-                        <option value="House Keeping" {% if request.GET.field == 'House Keeping' %}selected{% endif %}>House Keeping</option>
-                        <option value="Interior Design" {% if request.GET.field == 'Interior Design' %}selected{% endif %}>Interior Design</option>
-                        <option value="Locks" {% if request.GET.field == 'Locks' %}selected{% endif %}>Locks</option>
-                        <option value="Painting" {% if request.GET.field == 'Painting' %}selected{% endif %}>Painting</option>
-                        <option value="Plumbing" {% if request.GET.field == 'Plumbing' %}selected{% endif %}>Plumbing</option>
-                        <option value="Water Heaters" {% if request.GET.field == 'Water Heaters' %}selected{% endif %}>Water Heaters</option>
+                        <option value="Air Conditioner"
+                                {% if request.GET.field == 'Air Conditioner' %}selected{% endif %}>
+                            <i class="fas fa-snowflake"></i> Air Conditioner
+                        </option>
+                        <option value="Carpentry" {% if request.GET.field == 'Carpentry' %}selected{% endif %}>
+                            <i class="fas fa-hammer"></i> Carpentry
+                        </option>
+                        <option value="Electricity" {% if request.GET.field == 'Electricity' %}selected{% endif %}>
+                            <i class="fas fa-bolt"></i> Electricity
+                        </option>
+                        <option value="Gardening" {% if request.GET.field == 'Gardening' %}selected{% endif %}>
+                            <i class="fas fa-leaf"></i> Gardening
+                        </option>
+                        <option value="Home Machines" {% if request.GET.field == 'Home Machines' %}selected{% endif %}>
+                            <i class="fas fa-tools"></i> Home Machines
+                        </option>
+                        <option value="House Keeping" {% if request.GET.field == 'House Keeping' %}selected{% endif %}>
+                            <i class="fas fa-broom"></i> House Keeping
+                        </option>
+                        <option value="Interior Design"
+                                {% if request.GET.field == 'Interior Design' %}selected{% endif %}>
+                            <i class="fas fa-paint-roller"></i> Interior Design
+                        </option>
+                        <option value="Locks" {% if request.GET.field == 'Locks' %}selected{% endif %}>
+                            <i class="fas fa-lock"></i> Locks
+                        </option>
+                        <option value="Painting" {% if request.GET.field == 'Painting' %}selected{% endif %}>
+                            <i class="fas fa-fill-drip"></i> Painting
+                        </option>
+                        <option value="Plumbing" {% if request.GET.field == 'Plumbing' %}selected{% endif %}>
+                            <i class="fas fa-faucet"></i> Plumbing
+                        </option>
+                        <option value="Water Heaters" {% if request.GET.field == 'Water Heaters' %}selected{% endif %}>
+                            <i class="fas fa-fire"></i> Water Heaters
+                        </option>
                     </select>
                 </div>
             </form>
+        </div>
         </div>
 
         <div class="services-grid">
@@ -41,7 +77,21 @@
                     <div class="service-card">
                         <div class="service-card-header">
                             <h3 class="service-title">{{ service.name }}</h3>
-                            <span class="service-badge">{{ service.field }}</span>
+                            <span class="service-badge">
+                            {% if service.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                            {% elif service.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                            {% elif service.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                            {% elif service.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                            {% elif service.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                            {% elif service.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                            {% elif service.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                            {% elif service.field == 'Locks' %}<i class="fas fa-lock"></i>
+                            {% elif service.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                            {% elif service.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                            {% elif service.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                            {% endif %}
+                                {{ service.field }}
+                        </span>
                         </div>
                         <div class="service-card-body">
                             <p class="service-description">
@@ -49,15 +99,25 @@
                             </p>
                         </div>
                         <div class="service-card-footer">
-                            <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
-                            <div class="service-provider">By <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
-                            <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                            <div class="service-price">
+                                <i class="fas fa-tag"></i> {{ service.price_hour }}€<span
+                                    class="price-unit">/hour</span>
+                            </div>
+                            <div class="service-provider">
+                                <i class="fas fa-building"></i> By <a
+                                    href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a>
+                            </div>
+                            <a href="{% url 'index' service.id %}" class="view-details-btn">
+                                <i class="fas fa-arrow-right"></i> View Details
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
             {% else %}
                 <div class="no-services">
-                    <p>No services available yet. {% if user.is_company %}Why not <a href="{% url 'services_create' %}">create one</a>?{% endif %}</p>
+                    <i class="fas fa-search fa-3x"></i>
+                    <p>No services available yet. {% if user.is_company %}Why not
+                        <a href="{% url 'services_create' %}">create one</a>?{% endif %}</p>
                 </div>
             {% endif %}
         </div>

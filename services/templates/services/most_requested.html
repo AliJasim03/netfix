@@ -1,163 +1,94 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
     Most Requested Services
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/services.css' %}">
+    <link rel="stylesheet" href="{% static 'css/most-requested.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="popular-services-container">
-    <h1 class="title">Most Requested Services</h1>
-    
-    <div class="services-header">
-        <p>Discover the most popular services on NetFix. These services have been requested the most by our customers.</p>
+    <div class="popular-services-header">
+        <h1 class="title"><i class="fas fa-trophy"></i> Most Requested Services</h1>
+        <p class="popular-services-subtitle">Discover the most popular services on NetFix. These services have been
+            requested the most by our customers.</p>
     </div>
-    
+
     {% if popular_services %}
         <div class="popular-services-list">
             {% for service in popular_services %}
                 <div class="popular-service-item">
-                    <div class="rank-badge">{{ forloop.counter }}</div>
+                    <div class="rank-badge">
+                        {% if forloop.counter == 1 %}
+                            <i class="fas fa-medal gold"></i>
+                        {% elif forloop.counter == 2 %}
+                            <i class="fas fa-medal silver"></i>
+                        {% elif forloop.counter == 3 %}
+                            <i class="fas fa-medal bronze"></i>
+                        {% else %}
+                            {{ forloop.counter }}
+                        {% endif %}
+                    </div>
                     <div class="service-content">
                         <div class="service-header">
                             <h2 class="service-title">{{ service.name }}</h2>
-                            <span class="service-badge">{{ service.field }}</span>
+                            <span class="service-badge">
+                                {% if service.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                                {% elif service.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                                {% elif service.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                                {% elif service.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                                {% elif service.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                                {% elif service.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                                {% elif service.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                                {% elif service.field == 'Locks' %}<i class="fas fa-lock"></i>
+                                {% elif service.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                                {% elif service.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                                {% elif service.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                                {% endif %}
+                                {{ service.field }}
+                            </span>
                         </div>
                         <p class="service-description">{{ service.description|truncatechars:200 }}</p>
                         <div class="service-meta">
-                            <div class="service-provider">By <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
-                            <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
-                            <div class="request-count">{{ service.request_count }} requests</div>
+                            <div class="service-provider">
+                                <i class="fas fa-building"></i> By <a
+                                    href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a>
+                            </div>
+                            <div class="service-price">
+                                <i class="fas fa-tag"></i> {{ service.price_hour }}€<span
+                                    class="price-unit">/hour</span>
+                            </div>
+                            <div class="request-count">
+                                <i class="fas fa-users"></i> {{ service.request_count }} requests
+                            </div>
                         </div>
-                        <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                        <div class="service-actions">
+                            <a href="{% url 'index' service.id %}" class="btn btn-primary">
+                                <i class="fas fa-arrow-right"></i> View Details
+                            </a>
+                            {% if user.is_customer %}
+                                <a href="{% url 'request_service' service.id %}" class="btn btn-outline">
+                                    <i class="fas fa-check-circle"></i> Request Service
+                                </a>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="no-services">
-            <p>No services have been requested yet.</p>
-            <a href="{% url 'services_list' %}" class="button">Browse Services</a>
+            <i class="fas fa-search fa-3x"></i>
+            <h3>No Services Requested Yet</h3>
+            <p>Services will appear here once customers begin making requests.</p>
+            <a href="{% url 'services_list' %}" class="btn btn-primary">
+                <i class="fas fa-list"></i> Browse Services
+            </a>
         </div>
     {% endif %}
 </div>
-
-<style>
-    .services-header {
-        max-width: 800px;
-        margin: 0 auto 3rem;
-        text-align: center;
-        color: var(--text-light);
-    }
-    
-    .popular-services-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1.5rem;
-    }
-    
-    .popular-service-item {
-        display: flex;
-        gap: 1.5rem;
-        padding: 1.5rem;
-        background-color: white;
-        border-radius: var(--radius-lg);
-        box-shadow: var(--shadow-md);
-        transition: var(--transition);
-    }
-    
-    .popular-service-item:hover {
-        transform: translateY(-5px);
-    }
-    
-    .rank-badge {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 60px;
-        height: 60px;
-        background-color: var(--primary-color);
-        color: white;
-        font-size: 1.5rem;
-        font-weight: 700;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-    
-    .popular-service-item:nth-child(1) .rank-badge {
-        background-color: gold;
-        color: var(--text-dark);
-    }
-    
-    .popular-service-item:nth-child(2) .rank-badge {
-        background-color: silver;
-        color: var(--text-dark);
-    }
-    
-    .popular-service-item:nth-child(3) .rank-badge {
-        background-color: #cd7f32; /* Bronze */
-    }
-    
-    .service-content {
-        flex: 1;
-    }
-    
-    .service-header {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1rem;
-    }
-    
-    .service-title {
-        margin: 0;
-    }
-    
-    .service-description {
-        color: var(--text-light);
-        margin-bottom: 1.5rem;
-    }
-    
-    .service-meta {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-        margin-bottom: 1.5rem;
-    }
-    
-    .service-provider {
-        color: var(--text-light);
-    }
-    
-    .service-price {
-        font-weight: 600;
-        color: var(--primary-color);
-    }
-    
-    .request-count {
-        background-color: var(--secondary-color);
-        color: white;
-        padding: 0.25rem 0.75rem;
-        border-radius: var(--radius-md);
-        font-size: 0.875rem;
-    }
-    
-    .no-services {
-        text-align: center;
-        padding: 3rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-lg);
-    }
-    
-    @media (max-width: 768px) {
-        .popular-service-item {
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        
-        .service-meta {
-            flex-direction: column;
-            gap: 1rem;
-        }
-    }
-</style>
 {% endblock %}

@@ -1,12 +1,139 @@
-{% extends 'main/base.html' %} 
+{% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
   Customer Registration
-{%endblock %}
+{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/register.css' %}">
+{% endblock %}
 
 {% block content %}
-    <form method="POST">
-        {% csrf_token %}
-        {{form}}
-        <button type="submit" name="register">Register</button>
-    </form>
+    <div class="register-container">
+        <h1 class="title"><i class="fas fa-user-plus"></i> Register as Customer</h1>
+        <p class="register-subtitle">Create your customer account to start requesting services</p>
+
+        <div class="register-form-card">
+            <form method="POST">
+                {% csrf_token %}
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {% for error in form.non_field_errors %}
+                            <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">
+                        <i class="fas fa-user"></i> Username
+                    </label>
+                    {{ form.username }}
+                    {% if form.username.errors %}
+                        <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.username.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.email.id_for_label }}">
+                        <i class="fas fa-envelope"></i> Email
+                    </label>
+                    {{ form.email }}
+                    {% if form.email.errors %}
+                        <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.email.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.date_of_birth.id_for_label }}">
+                        <i class="fas fa-birthday-cake"></i> Date of Birth
+                    </label>
+                    {{ form.date_of_birth }}
+                    <p class="help-text">Optional: Enter your date of birth</p>
+                    {% if form.date_of_birth.errors %}
+                        <p class="error-message"><i
+                                class="fas fa-exclamation-circle"></i> {{ form.date_of_birth.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">
+                        <i class="fas fa-lock"></i> Password
+                    </label>
+                    <div class="password-input-wrapper">
+                        {{ form.password1 }}
+                        <span class="password-toggle-icon" id="password-toggle-1">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    </div>
+                    <p class="help-text">{{ form.password1.help_text }}</p>
+                    {% if form.password1.errors %}
+                        <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.password1.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">
+                        <i class="fas fa-lock"></i> Confirm Password
+                    </label>
+                    <div class="password-input-wrapper">
+                        {{ form.password2 }}
+                        <span class="password-toggle-icon" id="password-toggle-2">
+                        <i class="fas fa-eye"></i>
+                    </span>
+                    </div>
+                    {% if form.password2.errors %}
+                        <p class="error-message"><i class="fas fa-exclamation-circle"></i> {{ form.password2.errors.0 }}
+                        </p>
+                    {% endif %}
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" name="register" class="btn btn-primary">
+                        <i class="fas fa-user-plus"></i> Register
+                    </button>
+                    <a href="{% url 'register' %}" class="btn btn-outline">
+                        <i class="fas fa-arrow-left"></i> Back
+                    </a>
+                </div>
+            </form>
+        </div>
+
+        <div class="register-footer">
+            <p>Already have an account? <a href="{% url 'login_user' %}">Log in</a></p>
+            <p>Want to register as a company? <a href="{% url 'register_company' %}">Register as Company</a></p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const passwordFields = [
+                {
+                    field: document.getElementById('{{ form.password1.id_for_label }}'),
+                    toggle: document.getElementById('password-toggle-1')
+                },
+                {
+                    field: document.getElementById('{{ form.password2.id_for_label }}'),
+                    toggle: document.getElementById('password-toggle-2')
+                }
+            ];
+
+            passwordFields.forEach(item => {
+                if (item.field && item.toggle) {
+                    item.toggle.addEventListener('click', function () {
+                        const type = item.field.getAttribute('type') === 'password' ? 'text' : 'password';
+                        item.field.setAttribute('type', type);
+                        // Change icon based on password visibility
+                        this.innerHTML = type === 'password' ?
+                            '<i class="fas fa-eye"></i>' :
+                            '<i class="fas fa-eye-slash"></i>';
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

@@ -1,28 +1,60 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
     {{field}} Services
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/services.css' %}">
+    <link rel="stylesheet" href="{% static 'css/services-field.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="services-container">
-    <h1 class="title">{{field}} Services</h1>
+    <div class="field-header">
+        <h1 class="title">
+            {% if field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+            {% elif field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+            {% elif field == 'Electricity' %}<i class="fas fa-bolt"></i>
+            {% elif field == 'Gardening' %}<i class="fas fa-leaf"></i>
+            {% elif field == 'Home Machines' %}<i class="fas fa-tools"></i>
+            {% elif field == 'House Keeping' %}<i class="fas fa-broom"></i>
+            {% elif field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+            {% elif field == 'Locks' %}<i class="fas fa-lock"></i>
+            {% elif field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+            {% elif field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+            {% elif field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+            {% endif %}
+            {{ field }} Services
+        </h1>
+    </div>
 
     <div class="field-description">
         <div class="field-icon">
-            {% if field == 'Air Conditioner' %}🌡️
-            {% elif field == 'Carpentry' %}🪑
-            {% elif field == 'Electricity' %}⚡
-            {% elif field == 'Gardening' %}🌱
-            {% elif field == 'Home Machines' %}🧰
-            {% elif field == 'House Keeping' %}🧹
-            {% elif field == 'Interior Design' %}🎨
-            {% elif field == 'Locks' %}🔒
-            {% elif field == 'Painting' %}🖌️
-            {% elif field == 'Plumbing' %}🚿
-            {% elif field == 'Water Heaters' %}🔥
+            {% if field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+            {% elif field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+            {% elif field == 'Electricity' %}<i class="fas fa-bolt"></i>
+            {% elif field == 'Gardening' %}<i class="fas fa-leaf"></i>
+            {% elif field == 'Home Machines' %}<i class="fas fa-tools"></i>
+            {% elif field == 'House Keeping' %}<i class="fas fa-broom"></i>
+            {% elif field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+            {% elif field == 'Locks' %}<i class="fas fa-lock"></i>
+            {% elif field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+            {% elif field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+            {% elif field == 'Water Heaters' %}<i class="fas fa-fire"></i>
             {% endif %}
         </div>
-        <p>Browse all available {{field}} services. Find the right professional for your needs.</p>
+        <div class="field-info">
+            <p>Browse all available {{ field }} services. Find the right professional for your needs.</p>
+            {% if user.is_company %}
+                {% if user.company.field == field or user.company.field == 'All in One' %}
+                    <a href="{% url 'services_create' %}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus-circle"></i> Create {{ field }} Service
+                    </a>
+                {% endif %}
+            {% endif %}
+        </div>
     </div>
 
     {% if services.all|length != 0 %}
@@ -31,7 +63,21 @@
                 <div class="service-card">
                     <div class="service-card-header">
                         <h3 class="service-title">{{ service.name }}</h3>
-                        <span class="service-badge">{{ service.field }}</span>
+                        <span class="service-badge">
+                            {% if service.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                            {% elif service.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                            {% elif service.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                            {% elif service.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                            {% elif service.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                            {% elif service.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                            {% elif service.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                            {% elif service.field == 'Locks' %}<i class="fas fa-lock"></i>
+                            {% elif service.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                            {% elif service.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                            {% elif service.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                            {% endif %}
+                            {{ service.field }}
+                        </span>
                     </div>
                     <div class="service-card-body">
                         <p class="service-description">
@@ -39,59 +85,32 @@
                         </p>
                     </div>
                     <div class="service-card-footer">
-                        <div class="service-price">{{ service.price_hour }}€<span class="price-unit">/hour</span></div>
-                        <div class="service-provider">By <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
-                        <a href="{% url 'index' service.id %}" class="view-details-btn">View Details</a>
+                        <div class="service-price">
+                            <i class="fas fa-tag"></i> {{ service.price_hour }}€<span class="price-unit">/hour</span>
+                        </div>
+                        <div class="service-provider">
+                            <i class="fas fa-building"></i> By <a
+                                href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a>
+                        </div>
+                        <a href="{% url 'index' service.id %}" class="view-details-btn">
+                            <i class="fas fa-arrow-right"></i> View Details
+                        </a>
                     </div>
                 </div>
             {% endfor %}
         </div>
     {% else %}
         <div class="no-services">
+            <i class="fas fa-search fa-3x"></i>
             <p>Sorry, no {{field}} services are available at the moment.</p>
             {% if user.is_company %}
                 {% if user.company.field == field or user.company.field == 'All in One' %}
-                    <p>Why not create one?</p>
-                    <a href="{% url 'services_create' %}" class="button">Create Service</a>
+                    <a href="{% url 'services_create' %}" class="btn btn-primary">
+                        <i class="fas fa-plus-circle"></i> Create {{ field }} Service
+                    </a>
                 {% endif %}
             {% endif %}
         </div>
     {% endif %}
 </div>
-
-<style>
-    .field-description {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        margin-bottom: 2rem;
-        padding: 1.5rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-lg);
-    }
-
-    .field-icon {
-        font-size: 2.5rem;
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-color: var(--secondary-color);
-        color: white;
-        border-radius: 50%;
-    }
-
-    .no-services {
-        text-align: center;
-        padding: 3rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-lg);
-        margin-top: 2rem;
-    }
-
-    .no-services p {
-        margin-bottom: 1rem;
-    }
-</style>
 {% endblock %}

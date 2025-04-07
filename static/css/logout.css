@@ -1,0 +1,65 @@
+/* Logout Page Styles */
+.logout-container {
+    max-width: 500px;
+    margin: 3rem auto;
+    padding: 3rem 2rem;
+    text-align: center;
+    background-color: var(--card-bg);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.logout-icon {
+    font-size: 3rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: center;
+}
+
+.logout-icon i {
+    width: 80px;
+    height: 80px;
+    background-color: rgba(74, 144, 226, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logout-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.logout-message {
+    color: var(--text-light);
+    font-size: 1.125rem;
+    margin-bottom: 2.5rem;
+}
+
+.logout-actions {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}
+
+@media (max-width: 580px) {
+    .logout-container {
+        margin: 2rem 1rem;
+        padding: 2rem 1.5rem;
+    }
+
+    .logout-title {
+        font-size: 1.75rem;
+    }
+
+    .logout-message {
+        font-size: 1rem;
+    }
+
+    .logout-actions {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

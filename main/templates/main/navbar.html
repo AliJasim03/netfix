@@ -1,30 +1,89 @@
-<nav class="navbar">
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li>
-            <a href="/services/">Services</a>
-            <ul>
-                <li><a href="/services/air-conditioner">Air Conditioner</a></li>
-                <li><a href="/services/carpentry">Carpentry</a></li>
-                <li><a href="/services/electricity">Electricity</a></li>
-                <li><a href="/services/gardening">Gardening</a></li>
-                <li><a href="/services/home-machines">Home Machines</a></li>
-                <li><a href="/services/house-keeping">House Keeping</a></li>
-                <li><a href="/services/interior-design">Interior Design</a></li>
-                <li><a href="/services/locks">Locks</a></li>
-                <li><a href="/services/painting">Painting</a></li>
-                <li><a href="/services/plumbing">Plumbing</a></li>
-                <li><a href="/services/water-heaters">Water Heaters</a></li>
-            </ul>
-        </li>
-        <li><a href="/company/{{ request.user.username }}">Profile</a></li>
-    </ul>
-    <ul class="navbar-right">
-        {% if request.user.is_authenticated %}
-        <li><a href="{% url 'main:logout' %}">Logout</a></li>
-        {% else %}
-        <li><a href="{% url 'login_user' %}">Login</a></li>
-        <li><a href="{% url 'register' %}">Register</a></li>
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}NetFix{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+
+    <!-- Main CSS -->
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <!-- Extra CSS -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+<!-- Navigation bar -->
+{% include 'main/navbar.html' %}
+
+<!-- Main content container -->
+<div class="container">
+    <!-- Messages/Alerts -->
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    {% if message.tags == 'success' %}
+                        <i class="fas fa-check-circle"></i>
+                    {% elif message.tags == 'error' %}
+                        <i class="fas fa-exclamation-circle"></i>
+                    {% elif message.tags == 'warning' %}
+                        <i class="fas fa-exclamation-triangle"></i>
+                    {% else %}
+                        <i class="fas fa-info-circle"></i>
+                    {% endif %}
+                    {{ message }}
+                </div>
+            {% endfor %}
+        </div>
         {% endif %}
-    </ul>
-</nav>
+
+    <!-- Content area -->
+    <div class="content">
+        {% block content %}{% endblock %}
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-content">
+            <div class="footer-logo">
+                <i class="fas fa-tools fa-lg"></i>
+                <span>NetFix</span>
+            </div>
+            <div class="footer-links">
+                <a href="{% url 'main:home' %}"><i class="fas fa-home"></i> Home</a>
+                <a href="{% url 'services_list' %}"><i class="fas fa-briefcase"></i> Services</a>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'main:logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                {% else %}
+                    <a href="{% url 'login_user' %}"><i class="fas fa-sign-in-alt"></i> Login</a>
+                    <a href="{% url 'register' %}"><i class="fas fa-user-plus"></i> Register</a>
+                {% endif %}
+            </div>
+            <div class="footer-copyright">
+                &copy; {% now "Y" %} NetFix. All rights reserved.
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- Main JavaScript -->
+<script src="{% static 'js/main.js' %}"></script>
+
+<!-- Extra JavaScript -->
+{% block extra_js %}{% endblock %}
+</body>
+</html>

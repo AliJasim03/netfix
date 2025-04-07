@@ -1,52 +1,112 @@
 {% extends 'main/base.html' %}
+{% load static %}
+
 {% block title %}
     {{ service.name }} - Service Details
 {% endblock %}
 
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/services.css' %}">
+    <link rel="stylesheet" href="{% static 'css/service-details.css' %}">
+{% endblock %}
+
 {% block content %}
 <div class="service-detail-container">
-    <div class="service-header">
-        <div>
+    <div class="service-detail-header">
+        <div class="service-detail-title-area">
             <h1 class="service-detail-title">{{ service.name }}</h1>
-            <span class="service-detail-badge">{{ service.field }}</span>
+            <span class="service-detail-badge">
+                {% if service.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                {% elif service.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                {% elif service.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                {% elif service.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                {% elif service.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                {% elif service.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                {% elif service.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                {% elif service.field == 'Locks' %}<i class="fas fa-lock"></i>
+                {% elif service.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                {% elif service.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                {% elif service.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                {% endif %}
+                {{ service.field }}
+            </span>
         </div>
     </div>
 
     <div class="service-detail-meta">
-        <div class="service-detail-price">{{ service.price_hour }}€ <span class="price-unit">/hour</span></div>
-        <div class="service-detail-provider">Provided by: <a href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></div>
-        <div class="service-detail-date">Created on: {{ service.date|date:"F j, Y" }}</div>
+        <div class="meta-item">
+            <i class="fas fa-tag"></i>
+            <span class="service-detail-price">{{ service.price_hour }}€ <span class="price-unit">/hour</span></span>
+        </div>
+        <div class="meta-item">
+            <i class="fas fa-building"></i>
+            <span class="service-detail-provider">Provided by: <a
+                    href="{% url 'company_profile' service.company.user.username %}">{{ service.company.user.username }}</a></span>
+        </div>
+        <div class="meta-item">
+            <i class="fas fa-calendar-alt"></i>
+            <span class="service-detail-date">Created on: {{ service.date|date:"F j, Y" }}</span>
+        </div>
     </div>
 
     <div class="service-detail-description">
-        <h2>Service Description</h2>
-        <p>{{ service.description }}</p>
+        <h2><i class="fas fa-info-circle"></i> Service Description</h2>
+        <div class="description-content">
+            {{ service.description|linebreaks }}
+        </div>
     </div>
 
-    {% if user.is_customer %}
-        <a href="{% url 'request_service' service.id %}" class="request-service-btn">Request This Service</a>
-    {% elif not user.is_authenticated %}
-        <p class="login-prompt">Please <a href="{% url 'login_user' %}">login</a> as a customer to request this service.</p>
-    {% endif %}
+    <div class="service-detail-cta">
+        {% if user.is_customer %}
+            <a href="{% url 'request_service' service.id %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-check-circle"></i> Request This Service
+            </a>
+        {% elif not user.is_authenticated %}
+            <div class="login-prompt">
+                <i class="fas fa-info-circle"></i>
+                <p>Please <a href="{% url 'login_user' %}">login</a> as a customer to request this service.</p>
+            </div>
+        {% endif %}
+    </div>
 
     {% if user.is_company and user == service.company.user %}
         <div class="service-management">
-            <h3>Service Management</h3>
+            <h3><i class="fas fa-cogs"></i> Service Management</h3>
             <div class="management-buttons">
-                <a href="#" class="edit-service-btn">Edit Service</a>
-                <a href="#" class="delete-service-btn">Delete Service</a>
+                <a href="#" class="btn btn-secondary">
+                    <i class="fas fa-edit"></i> Edit Service
+                </a>
+                <a href="#" class="btn btn-danger">
+                    <i class="fas fa-trash-alt"></i> Delete Service
+                </a>
             </div>
         </div>
     {% endif %}
 
     <div class="company-info">
-        <h3>About the Provider</h3>
+        <h3><i class="fas fa-info-circle"></i> About the Provider</h3>
         <div class="company-card">
             <div class="company-avatar">{{ service.company.user.username|first|upper }}</div>
             <div class="company-details">
                 <h4>{{ service.company.user.username }}</h4>
-                <p class="company-field">{{ service.company.field }} Specialist</p>
-                <p class="company-rating">Rating:
+                <p class="company-field">
+                    {% if service.company.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                    {% elif service.company.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                    {% elif service.company.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                    {% elif service.company.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                    {% elif service.company.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                    {% elif service.company.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                    {% elif service.company.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                    {% elif service.company.field == 'Locks' %}<i class="fas fa-lock"></i>
+                    {% elif service.company.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                    {% elif service.company.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                    {% elif service.company.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                    {% elif service.company.field == 'All in One' %}<i class="fas fa-star"></i>
+                    {% endif %}
+                    {{ service.company.field }} Specialist
+                </p>
+                <p class="company-rating">
+                    <i class="fas fa-star"></i> Rating:
                     {% for i in "12345" %}
                         {% if forloop.counter <= service.company.rating %}
                             <span class="star filled">★</span>
@@ -56,25 +116,49 @@
                     {% endfor %}
                     <span class="rating-value">{{ service.company.rating }}/5</span>
                 </p>
-                <a href="{% url 'company_profile' service.company.user.username %}" class="view-profile-btn">View Profile</a>
+                <a href="{% url 'company_profile' service.company.user.username %}" class="btn btn-outline btn-sm">
+                    <i class="fas fa-user-circle"></i> View Profile
+                </a>
             </div>
         </div>
     </div>
 
     {% if related_services %}
         <div class="related-services">
-            <h3>Related Services</h3>
-            <div class="services-grid">
+            <h3><i class="fas fa-link"></i> Related Services</h3>
+            <div class="related-services-grid">
                 {% for related in related_services %}
                     <div class="service-card">
                         <div class="service-card-header">
                             <h3 class="service-title">{{ related.name }}</h3>
-                            <span class="service-badge">{{ related.field }}</span>
+                            <span class="service-badge">
+                                {% if related.field == 'Air Conditioner' %}<i class="fas fa-snowflake"></i>
+                                {% elif related.field == 'Carpentry' %}<i class="fas fa-hammer"></i>
+                                {% elif related.field == 'Electricity' %}<i class="fas fa-bolt"></i>
+                                {% elif related.field == 'Gardening' %}<i class="fas fa-leaf"></i>
+                                {% elif related.field == 'Home Machines' %}<i class="fas fa-tools"></i>
+                                {% elif related.field == 'House Keeping' %}<i class="fas fa-broom"></i>
+                                {% elif related.field == 'Interior Design' %}<i class="fas fa-paint-roller"></i>
+                                {% elif related.field == 'Locks' %}<i class="fas fa-lock"></i>
+                                {% elif related.field == 'Painting' %}<i class="fas fa-fill-drip"></i>
+                                {% elif related.field == 'Plumbing' %}<i class="fas fa-faucet"></i>
+                                {% elif related.field == 'Water Heaters' %}<i class="fas fa-fire"></i>
+                                {% endif %}
+                                {{ related.field }}
+                            </span>
                         </div>
                         <div class="service-card-footer">
-                            <div class="service-price">{{ related.price_hour }}€<span class="price-unit">/hour</span></div>
-                            <div class="service-provider">By <a href="{% url 'company_profile' related.company.user.username %}">{{ related.company.user.username }}</a></div>
-                            <a href="{% url 'index' related.id %}" class="view-details-btn">View Details</a>
+                            <div class="service-price">
+                                <i class="fas fa-tag"></i> {{ related.price_hour }}€<span
+                                    class="price-unit">/hour</span>
+                            </div>
+                            <div class="service-provider">
+                                <i class="fas fa-building"></i> By <a
+                                    href="{% url 'company_profile' related.company.user.username %}">{{ related.company.user.username }}</a>
+                            </div>
+                            <a href="{% url 'index' related.id %}" class="view-details-btn">
+                                <i class="fas fa-arrow-right"></i> View Details
+                            </a>
                         </div>
                     </div>
                 {% endfor %}
@@ -82,91 +166,4 @@
         </div>
     {% endif %}
 </div>
-
-<style>
-    .star {
-        color: #ccc;
-        font-size: 1.25rem;
-    }
-    .star.filled {
-        color: #f59e0b;
-    }
-    .rating-value {
-        margin-left: 0.5rem;
-        font-size: 0.875rem;
-        color: var(--text-light);
-    }
-    .company-card {
-        display: flex;
-        align-items: center;
-        gap: 1.5rem;
-        padding: 1.5rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-lg);
-        margin-top: 1rem;
-    }
-    .company-avatar {
-        width: 80px;
-        height: 80px;
-        background-color: var(--secondary-color);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-size: 2rem;
-        font-weight: 600;
-    }
-    .company-details {
-        flex: 1;
-    }
-    .company-field {
-        color: var(--text-light);
-        margin-bottom: 0.5rem;
-    }
-    .view-profile-btn {
-        display: inline-block;
-        padding: 0.5rem 1rem;
-        background-color: var(--secondary-color);
-        color: white;
-        border-radius: var(--radius-md);
-        margin-top: 1rem;
-        font-size: 0.875rem;
-    }
-    .view-profile-btn:hover {
-        background-color: var(--secondary-light);
-        color: white;
-    }
-    .service-management {
-        margin: 2rem 0;
-        padding: 1.5rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-lg);
-        border: 1px dashed var(--border-color);
-    }
-    .management-buttons {
-        display: flex;
-        gap: 1rem;
-        margin-top: 1rem;
-    }
-    .edit-service-btn {
-        padding: 0.5rem 1rem;
-        background-color: var(--secondary-color);
-        color: white;
-        border-radius: var(--radius-md);
-    }
-    .delete-service-btn {
-        padding: 0.5rem 1rem;
-        background-color: var(--error-color);
-        color: white;
-        border-radius: var(--radius-md);
-    }
-    .login-prompt {
-        margin: 2rem 0;
-        padding: 1rem;
-        background-color: #f9fafb;
-        border-radius: var(--radius-md);
-        text-align: center;
-    }
-</style>
 {% endblock %}
