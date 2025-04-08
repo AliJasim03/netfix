@@ -24,5 +24,5 @@ urlpatterns = [
     path('services/', include('services.urls')),
     path('users/', include('users.urls')),
     path('customer/<slug:name>', v.customer_profile, name='customer_profile'),
-    path('company/<slug:name>', v.company_profile, name='company_profile')
+    path('company/<str:name>', v.company_profile, name='company_profile')
 ]

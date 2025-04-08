@@ -1,14 +1,14 @@
 import datetime
 
-from django.core.checks import messages
+from django.contrib import messages
 from django.shortcuts import render, redirect
 
-from users.models import User, Company, Customer
 from services.models import Service, ServiceHistory
+from users.models import User, Company, Customer
 
 
 def home(request):
-    return render(request, 'users/home.html', {'user': request.user})
+    return render(request, 'users/profile.html', {'user': request.user})
 
 
 def customer_profile(request, name):

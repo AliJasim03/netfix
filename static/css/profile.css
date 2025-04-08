@@ -223,23 +223,38 @@
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
+    position: relative; /* Add this for badge positioning */
 }
 
 .service-card-title {
-    margin: 0;
-    font-size: 1.25rem;
+    margin-right: 6rem; /* Space for badge */
+    min-height: 2.5rem;
+/
 }
 
 .service-card-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.35rem;
-    background-color: var(--secondary-color);
     color: white;
-    font-size: 0.75rem;
-    padding: 0.25rem 0.75rem;
-    border-radius: var(--radius-sm);
     align-self: flex-start;
+    background-color: var(--secondary-color);
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1.25rem 1.25rem 0 0; /* Match card header padding */
+    z-index: 2;
+    font-size: 0.8rem !important;
+    padding: 0.35rem 1rem !important;
+    border-radius: var(--radius-md) !important;
+}
+
+.service-card-badge {
+    transition: transform 0.2s ease;
+}
+
+.service-card-badge:hover {
+    transform: translateY(-2px);
 }
 
 .service-card-body {

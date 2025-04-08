@@ -1,11 +1,9 @@
-from django.core.checks import messages
+from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
-from django.http import HttpResponseRedirect
 
-from users.models import Company, Customer, User
-
-from .models import Service, ServiceHistory
+from users.models import Company, Customer
 from .forms import CreateNewService, RequestServiceForm
+from .models import Service, ServiceHistory
 
 
 def service_list(request):
