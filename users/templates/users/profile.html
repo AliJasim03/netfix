@@ -2,10 +2,10 @@
 {% load static %}
 
 {% block title %}
-    {% if user.is_customer %}
-        Customer Profile - {{ user.username }}
+    {% if profile_user.is_customer %}
+        Customer Profile - {{ profile_user.username }}
     {% else %}
-        Company Profile - {{ user.username }}
+        Company Profile - {{ profile_user.username }}
     {% endif %}
 {% endblock %}
 
@@ -17,17 +17,17 @@
     <div class="profile-container">
         <div class="profile-header">
             <div class="profile-avatar">
-                {% if user.is_customer %}
+                {% if profile_user.is_customer %}
                     <i class="fas fa-user"></i>
                 {% else %}
                     <i class="fas fa-building"></i>
                 {% endif %}
-        </div>
+            </div>
             <div class="profile-info">
-                <h1 class="profile-name">{{ user.username }}</h1>
-                <p class="profile-email"><i class="fas fa-envelope"></i> {{ user.email }}</p>
+                <h1 class="profile-name">{{ profile_user.username }}</h1>
+                <p class="profile-email"><i class="fas fa-envelope"></i> {{ profile_user.email }}</p>
 
-                {% if user.is_customer %}
+                {% if profile_user.is_customer %}
                     <span class="profile-badge customer">
                     <i class="fas fa-user"></i> Customer
                 </span>
@@ -36,17 +36,17 @@
                     {% endif %}
                 {% else %}
                     <span class="profile-badge company">
-                    <i class="fas fa-briefcase"></i> {{ user.company.field }} Company
+                    <i class="fas fa-briefcase"></i> {{ profile_user.company.field }} Company
                 </span>
                     <p class="profile-meta">
-                        <i class="fas fa-star"></i> Rating: {{ user.company.rating }}/5
+                        <i class="fas fa-star"></i> Rating: {{ profile_user.company.rating }}/5
                     </p>
                 {% endif %}
             </div>
         </div>
 
         <div class="profile-content">
-            {% if user.is_customer %}
+            {% if profile_user.is_customer %}
                 <div class="section-header">
                     <h2 class="section-title"><i class="fas fa-history"></i> Service History</h2>
                 </div>
@@ -111,9 +111,11 @@
             {% else %}
                 <div class="section-header">
                     <h2 class="section-title"><i class="fas fa-list"></i> Available Services</h2>
-                    <a href="{% url 'services_create' %}" class="btn btn-primary">
-                        <i class="fas fa-plus-circle"></i> Add New Service
-                    </a>
+                    {% if user.is_authenticated and user.id == profile_user.id %}
+                        <a href="{% url 'services_create' %}" class="btn btn-primary">
+                            <i class="fas fa-plus-circle"></i> Add New Service
+                        </a>
+                    {% endif %}
                 </div>
 
                 {% if services %}
@@ -152,9 +154,11 @@
                                     <a href="{% url 'index' service.id %}" class="btn btn-primary btn-sm">
                                         <i class="fas fa-eye"></i> View
                                     </a>
-                                    <a href="#" class="btn btn-secondary btn-sm">
-                                        <i class="fas fa-edit"></i> Edit
-                                    </a>
+                                    {% if user.is_authenticated and user.id == profile_user.id %}
+                                        <a href="#" class="btn btn-secondary btn-sm">
+                                            <i class="fas fa-edit"></i> Edit
+                                        </a>
+                                    {% endif %}
                                 </div>
                             </div>
                         {% endfor %}
@@ -162,10 +166,12 @@
                 {% else %}
                     <div class="no-services">
                         <i class="fas fa-info-circle fa-2x"></i>
-                        <p>You haven't created any services yet.</p>
-                        <a href="{% url 'services_create' %}" class="btn btn-primary">
-                            <i class="fas fa-plus-circle" style="margin: auto"></i> Create Your First Service
-                        </a>
+                        <p>No services available yet.</p>
+                        {% if user.is_authenticated and user.id == profile_user.id %}
+                            <a href="{% url 'services_create' %}" class="btn btn-primary">
+                                <i class="fas fa-plus-circle" style="margin: auto"></i> Create Your First Service
+                            </a>
+                        {% endif %}
                     </div>
                 {% endif %}
             {% endif %}

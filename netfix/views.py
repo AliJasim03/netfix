@@ -13,13 +13,13 @@ def home(request):
 
 def customer_profile(request, name):
     try:
-        user = User.objects.get(username=name)
-        if not user.is_customer:
+        customer_user = User.objects.get(username=name)
+        if not customer_user.is_customer:
             messages.error(request, "This user is not a customer.")
-            return redirect('home')
+            return redirect('main:home')
 
         # Get customer's age from date of birth
-        customer = Customer.objects.get(user=user)
+        customer = Customer.objects.get(user=customer_user)
         today = datetime.date.today()
         user_age = None
         if customer.date_of_birth:
@@ -30,30 +30,30 @@ def customer_profile(request, name):
         service_history = ServiceHistory.objects.filter(customer=customer).order_by('-request_date')
 
         return render(request, 'users/profile.html', {
-            'user': user,
+            'profile_user': customer_user,
             'user_age': user_age,
             'sh': service_history
         })
     except User.DoesNotExist:
         messages.error(request, "Customer not found.")
-        return redirect('home')
+        return redirect('main:home')
 
 
 def company_profile(request, name):
     # Fetch the company user and all of the services available by it
     try:
-        user = User.objects.get(username=name)
-        if not user.is_company:
+        company_user = User.objects.get(username=name)
+        if not company_user.is_company:
             messages.error(request, "This user is not a company.")
-            return redirect('home')
+            return redirect('main:home')
 
         services = Service.objects.filter(
-            company=Company.objects.get(user=user)).order_by("-date")
+            company=Company.objects.get(user=company_user)).order_by("-date")
 
         return render(request, 'users/profile.html', {
-            'user': user,
+            'profile_user': company_user,  # Changed from 'user' to 'profile_user'
             'services': services
         })
     except User.DoesNotExist:
         messages.error(request, "Company not found.")
-        return redirect('home')
+        return redirect('main:home')
